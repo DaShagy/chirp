@@ -18,33 +18,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import chirp.composeapp.generated.resources.Res
 import chirp.composeapp.generated.resources.compose_multiplatform
+import com.jjasystems.chirp.auth.presentation.register.RegisterAction
+import com.jjasystems.chirp.auth.presentation.register.RegisterRoot
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 
 @Composable
 @Preview
 fun App() {
     ChirpTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
-        }
+        RegisterRoot()
     }
 }
