@@ -77,7 +77,7 @@ class RegisterViewModel(
         ) { isEmailValid, isUsernameValid, isPasswordValid, isRegistering ->
             val allValid = isEmailValid && isUsernameValid && isPasswordValid
             _state.update { it.copy(
-                canRegister = isRegistering && allValid
+                canRegister = !isRegistering && allValid
             ) }
         }.launchIn(viewModelScope)
     }
@@ -91,7 +91,7 @@ class RegisterViewModel(
                     isPasswordVisible = !it.isPasswordVisible
                 ) }
             }
-            else -> {}
+            else -> Unit
         }
     }
 
@@ -119,6 +119,8 @@ class RegisterViewModel(
                     _state.update { it.copy(
                         isRegistering = false
                     ) }
+
+                    eventChannel.send(RegisterEvent.Success(email))
                 }
                 .onFailure { error ->
                     val registrationError = when (error) {

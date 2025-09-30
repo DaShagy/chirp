@@ -21,13 +21,12 @@ import chirp.composeapp.generated.resources.compose_multiplatform
 import com.jjasystems.chirp.auth.presentation.register.RegisterAction
 import com.jjasystems.chirp.auth.presentation.register.RegisterRoot
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
+import com.jjasystems.chirp.navigation.NavigationRoot
 
 @Composable
 @Preview
 fun App() {
     ChirpTheme {
-        RegisterRoot(
-            onRegisterSuccess = {}
-        )
+        NavigationRoot()
     }
 }
