@@ -1,5 +1,6 @@
 package com.jjasystems.chirp.core.data.auth
 
+import com.jjasystems.chirp.core.data.dto.request.EmailRequest
 import com.jjasystems.chirp.core.data.dto.request.RegisterRequest
 import com.jjasystems.chirp.core.data.networking.post
 import com.jjasystems.chirp.core.domain.auth.AuthService
@@ -22,6 +23,17 @@ class KtorAuthService(
                 email = email,
                 username = username,
                 password = password
+            )
+        )
+    }
+
+    override suspend fun resendVerificationEmail(
+        email: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/resend-verification",
+            body = EmailRequest(
+                email = email
             )
         )
     }
