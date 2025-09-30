@@ -42,34 +42,43 @@ fun ChirpButton(
     isLoading: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null
 ) {
+
+    val contentColor = when(style) {
+        ChirpButtonStyle.PRIMARY -> MaterialTheme.colorScheme.onPrimary
+        ChirpButtonStyle.DESTRUCTIVE_PRIMARY -> MaterialTheme.colorScheme.onError
+        ChirpButtonStyle.SECONDARY -> MaterialTheme.colorScheme.extended.textSecondary
+        ChirpButtonStyle.DESTRUCTIVE_SECONDARY -> MaterialTheme.colorScheme.error
+        ChirpButtonStyle.TEXT -> MaterialTheme.colorScheme.tertiary
+    }
+
     val colors = when(style) {
         ChirpButtonStyle.PRIMARY -> ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
+            contentColor = contentColor,
             disabledContainerColor = MaterialTheme.colorScheme.extended.disabledFill,
             disabledContentColor = MaterialTheme.colorScheme.extended.textDisabled
         )
         ChirpButtonStyle.DESTRUCTIVE_PRIMARY -> ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.error,
-            contentColor = MaterialTheme.colorScheme.onError,
+            contentColor = contentColor,
             disabledContainerColor = MaterialTheme.colorScheme.extended.disabledFill,
             disabledContentColor = MaterialTheme.colorScheme.extended.textDisabled
         )
         ChirpButtonStyle.SECONDARY -> ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.extended.textSecondary,
+            contentColor = contentColor,
             disabledContainerColor = Color.Transparent,
             disabledContentColor = MaterialTheme.colorScheme.extended.textDisabled
         )
         ChirpButtonStyle.DESTRUCTIVE_SECONDARY -> ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.error,
+            contentColor = contentColor,
             disabledContainerColor = Color.Transparent,
             disabledContentColor = MaterialTheme.colorScheme.extended.textDisabled
         )
         ChirpButtonStyle.TEXT -> ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.tertiary,
+            contentColor = contentColor,
             disabledContainerColor = Color.Transparent,
             disabledContentColor = MaterialTheme.colorScheme.extended.textDisabled
         )
@@ -118,6 +127,7 @@ fun ChirpButton(
                         alpha = if(isLoading) 1f else 0f
                     ),
                 strokeWidth = 1.5.dp,
+                color = contentColor
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(
@@ -171,6 +181,22 @@ private fun ChirpDarkThemeButton_Preview(
             text = "Hello World!",
             onClick = {},
             style = style
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun ChirpLightThemeLoadingButton_Preview(
+    @PreviewParameter(ButtonStyleProvider::class)
+    style: ChirpButtonStyle
+) {
+    ChirpTheme {
+        ChirpButton(
+            text = "Hello World!",
+            onClick = {},
+            style = style,
+            isLoading = true
         )
     }
 }

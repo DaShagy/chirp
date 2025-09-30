@@ -26,6 +26,8 @@ import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 @Preview
 fun App() {
     ChirpTheme {
-        RegisterRoot()
+        RegisterRoot(
+            onRegisterSuccess = {}
+        )
     }
 }
