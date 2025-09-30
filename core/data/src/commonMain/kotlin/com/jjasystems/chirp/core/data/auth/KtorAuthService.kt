@@ -1,16 +1,37 @@
 package com.jjasystems.chirp.core.data.auth
 
+import com.jjasystems.chirp.core.data.dto.AuthInfoSerializable
 import com.jjasystems.chirp.core.data.dto.request.EmailRequest
+import com.jjasystems.chirp.core.data.dto.request.LoginRequest
 import com.jjasystems.chirp.core.data.dto.request.RegisterRequest
+import com.jjasystems.chirp.core.data.mapper.toDomain
+import com.jjasystems.chirp.core.data.networking.get
 import com.jjasystems.chirp.core.data.networking.post
+import com.jjasystems.chirp.core.domain.auth.AuthInfo
 import com.jjasystems.chirp.core.domain.auth.AuthService
 import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.EmptyResult
+import com.jjasystems.chirp.core.domain.util.Result
+import com.jjasystems.chirp.core.domain.util.map
 import io.ktor.client.HttpClient
 
 class KtorAuthService(
     private val httpClient: HttpClient
 ): AuthService {
+    override suspend fun login(
+        email: String,
+        password: String
+    ): Result<AuthInfo, DataError.Remote> {
+        return httpClient.post<LoginRequest, AuthInfoSerializable>(
+            route = "/auth/login",
+            body = LoginRequest(
+                email = email,
+                password = password
+            )
+        ).map { authInfoSerializable ->
+            authInfoSerializable.toDomain()
+        }
+    }
 
     override suspend fun register(
         email: String,
@@ -35,6 +56,13 @@ class KtorAuthService(
             body = EmailRequest(
                 email = email
             )
+        )
+    }
+
+    override suspend fun verifyEmail(token: String): EmptyResult<DataError.Remote> {
+        return httpClient.get(
+            route = "/auth/verify",
+            queryParams = mapOf("token" to token)
         )
     }
 }
