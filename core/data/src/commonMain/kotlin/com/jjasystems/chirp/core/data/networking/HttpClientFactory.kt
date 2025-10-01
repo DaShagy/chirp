@@ -60,7 +60,7 @@ class HttpClientFactory(
             }
 
             defaultRequest {
-                contentType(ContentType.Application.Json
+                contentType(ContentType.Application.Json)
             }
 
             install(Auth) {
@@ -78,7 +78,7 @@ class HttpClientFactory(
                     }
                     refreshTokens {
                         if (response.request.url.encodedPath.contains("auth/")) {
-                            return@refreshTokens
+                            return@refreshTokens null
                         }
 
                         val authInfo = sessionStorage

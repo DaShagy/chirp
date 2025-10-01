@@ -4,6 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.jjasystems.chirp.core.data.dto.AuthInfoSerializable
+import com.jjasystems.chirp.core.data.mapper.toDomain
 import com.jjasystems.chirp.core.data.mapper.toSerializable
 import com.jjasystems.chirp.core.domain.auth.AuthInfo
 import com.jjasystems.chirp.core.domain.auth.SessionStorage
@@ -25,7 +27,7 @@ class DataStoreSessionStorage(
         return dataStore.data.map { prefs ->
             val serializedJson = prefs[authInfoKey]
             serializedJson?.let {
-                json.decodeFromString(it)
+                json.decodeFromString<AuthInfoSerializable>(it).toDomain()
             }
         }
     }

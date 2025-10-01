@@ -13,6 +13,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.koin.android)
+
+            implementation(libs.core.splashscreen)
         }
         commonMain.dependencies {
             implementation(projects.core.domain)
@@ -29,6 +31,7 @@ kotlin {
             implementation(projects.feature.auth.presentation)
 
             implementation(libs.jetbrains.compose.navigation)
+            implementation(libs.bundles.koin.common)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
