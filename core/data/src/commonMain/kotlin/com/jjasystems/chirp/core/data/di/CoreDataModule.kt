@@ -1,9 +1,11 @@
 package com.jjasystems.chirp.core.data.di
 
+import com.jjasystems.chirp.core.data.auth.DataStoreSessionStorage
 import com.jjasystems.chirp.core.data.auth.KtorAuthService
 import com.jjasystems.chirp.core.data.logging.KermitLogger
 import com.jjasystems.chirp.core.data.networking.HttpClientFactory
 import com.jjasystems.chirp.core.domain.auth.AuthService
+import com.jjasystems.chirp.core.domain.auth.SessionStorage
 import com.jjasystems.chirp.core.domain.logging.ChirpLogger
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -20,4 +22,5 @@ val coreDataModule = module {
     }
 
     singleOf(::KtorAuthService) bind AuthService::class
+    singleOf(::DataStoreSessionStorage) bind SessionStorage::class
 }
