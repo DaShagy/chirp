@@ -30,6 +30,7 @@ import com.jjasystems.chirp.core.design_system.components.brand.ChirpBrandLogo
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 import com.jjasystems.chirp.core.design_system.theme.extended
 import com.jjasystems.chirp.core.presentation.util.DeviceConfiguration
+import com.jjasystems.chirp.core.presentation.util.clearFocusOnTap
 import com.jjasystems.chirp.core.presentation.util.currentDeviceConfiguration
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -52,6 +53,7 @@ fun ChirpAdaptiveFormLayout(
         DeviceConfiguration.MOBILE_PORTRAIT -> {
             ChirpSurface(
                 modifier = modifier
+                    .clearFocusOnTap()
                     .consumeWindowInsets(WindowInsets.navigationBars)
                     .consumeWindowInsets(WindowInsets.displayCutout),
                 header = {

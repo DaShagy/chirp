@@ -18,7 +18,7 @@ import com.jjasystems.chirp.core.design_system.components.buttons.ChirpButton
 import com.jjasystems.chirp.core.design_system.components.buttons.ChirpButtonStyle
 import com.jjasystems.chirp.core.design_system.components.layouts.ChirpAdaptiveResultLayout
 import com.jjasystems.chirp.core.design_system.components.layouts.ChirpSimpleResultLayout
-import com.jjasystems.chirp.core.design_system.components.layouts.ChirpSnackbarScaffold
+import com.jjasystems.chirp.core.design_system.components.layouts.ChirpScaffold
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 import com.jjasystems.chirp.core.presentation.util.ObserveAsEvents
 import org.jetbrains.compose.resources.getString
@@ -67,7 +67,7 @@ fun RegisterSuccessScreen(
     onAction: (RegisterSuccessAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    ChirpSnackbarScaffold(
+    ChirpScaffold(
         snackbarHostState = snackbarHostState
     ) {
         ChirpAdaptiveResultLayout {

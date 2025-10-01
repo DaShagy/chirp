@@ -6,9 +6,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navDeepLink
 import com.jjasystems.chirp.auth.presentation.email_verification.EmailVerificationRoot
+import com.jjasystems.chirp.auth.presentation.forgot_password.ForgotPasswordRoot
 import com.jjasystems.chirp.auth.presentation.login.LoginRoot
 import com.jjasystems.chirp.auth.presentation.register.RegisterRoot
 import com.jjasystems.chirp.auth.presentation.register_success.RegisterSuccessRoot
+import com.jjasystems.chirp.auth.presentation.reset_password.ResetPasswordRoot
 
 fun NavGraphBuilder.authGraph(
     navController: NavController,
@@ -88,6 +90,23 @@ fun NavGraphBuilder.authGraph(
                     }
                 }
             )
+        }
+
+        composable<AuthGraphRoutes.ForgotPassword> {
+            ForgotPasswordRoot()
+        }
+
+        composable<AuthGraphRoutes.ResetPassword>(
+            deepLinks = listOf(
+                navDeepLink {
+                    this.uriPattern = "https://chirp.jja-systems.site/api/auth/reset-password?token={token}"
+                },
+                navDeepLink {
+                    this.uriPattern = "chirp://chirp.jja-systems.site/api/auth/reset-password?token={token}"
+                }
+            )
+        ) {
+            ResetPasswordRoot()
         }
     }
 }

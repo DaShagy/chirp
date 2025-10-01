@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import chirp.feature.auth.presentation.generated.resources.Res
 import chirp.feature.auth.presentation.generated.resources.create_account
 import chirp.feature.auth.presentation.generated.resources.email
@@ -29,7 +28,7 @@ import com.jjasystems.chirp.core.design_system.components.brand.ChirpBrandLogo
 import com.jjasystems.chirp.core.design_system.components.buttons.ChirpButton
 import com.jjasystems.chirp.core.design_system.components.buttons.ChirpButtonStyle
 import com.jjasystems.chirp.core.design_system.components.layouts.ChirpAdaptiveFormLayout
-import com.jjasystems.chirp.core.design_system.components.layouts.ChirpSnackbarScaffold
+import com.jjasystems.chirp.core.design_system.components.layouts.ChirpScaffold
 import com.jjasystems.chirp.core.design_system.components.textfields.ChirpPasswordTextField
 import com.jjasystems.chirp.core.design_system.components.textfields.ChirpTextField
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
@@ -72,9 +71,7 @@ fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
 ) {
-    ChirpSnackbarScaffold(
-        snackbarHostState = remember { SnackbarHostState() },
-    ) {
+    ChirpScaffold {
         ChirpAdaptiveFormLayout(
             headerText = stringResource(Res.string.welcome_back),
             errorText = state.error?.asString(),

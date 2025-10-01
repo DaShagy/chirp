@@ -4,6 +4,7 @@ import com.jjasystems.chirp.core.data.dto.AuthInfoSerializable
 import com.jjasystems.chirp.core.data.dto.request.EmailRequest
 import com.jjasystems.chirp.core.data.dto.request.LoginRequest
 import com.jjasystems.chirp.core.data.dto.request.RegisterRequest
+import com.jjasystems.chirp.core.data.dto.request.ResetPasswordRequest
 import com.jjasystems.chirp.core.data.mapper.toDomain
 import com.jjasystems.chirp.core.data.networking.get
 import com.jjasystems.chirp.core.data.networking.post
@@ -18,6 +19,7 @@ import io.ktor.client.HttpClient
 class KtorAuthService(
     private val httpClient: HttpClient
 ): AuthService {
+
     override suspend fun login(
         email: String,
         password: String
@@ -63,6 +65,28 @@ class KtorAuthService(
         return httpClient.get(
             route = "/auth/verify",
             queryParams = mapOf("token" to token)
+        )
+    }
+
+    override suspend fun forgotPassword(email: String): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/forgot-password",
+            body = EmailRequest(
+                email = email
+            )
+        )
+    }
+
+    override suspend fun resetPassword(
+        newPassword: String,
+        token: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/reset-password",
+            body = ResetPasswordRequest(
+                newPassword = newPassword,
+                token = token
+            )
         )
     }
 }
