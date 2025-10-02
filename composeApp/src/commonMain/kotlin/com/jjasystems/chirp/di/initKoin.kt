@@ -1,6 +1,7 @@
 package com.jjasystems.chirp.di
 
 import com.jjasystems.chirp.auth.presentation.di.authPresentationModule
+import com.jjasystems.chirp.chat.data.di.chatDataModule
 import com.jjasystems.chirp.chat.presentation.di.chatPresentationModule
 import com.jjasystems.chirp.core.data.di.coreDataModule
 import com.jjasystems.chirp.core.presentation.di.corePresentationModule
@@ -16,7 +17,8 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             coreDataModule,
             corePresentationModule,
             authPresentationModule,
-            chatPresentationModule
+            chatPresentationModule,
+            chatDataModule
         )
     }
 }

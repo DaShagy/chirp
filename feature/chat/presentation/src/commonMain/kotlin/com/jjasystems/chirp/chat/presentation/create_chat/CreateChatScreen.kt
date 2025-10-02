@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.cancel
 import chirp.feature.chat.presentation.generated.resources.create_chat
+import com.jjasystems.chirp.chat.domain.model.Chat
 import com.jjasystems.chirp.chat.presentation.components.ChatParticipantSearchTextSection
 import com.jjasystems.chirp.chat.presentation.components.ChatParticipantsSelectionSection
 import com.jjasystems.chirp.chat.presentation.components.ManageChatButtonSection
@@ -32,6 +32,7 @@ import com.jjasystems.chirp.core.design_system.components.buttons.ChirpButtonSty
 import com.jjasystems.chirp.core.design_system.components.dialog.ChirpAdaptiveDialogSheetLayout
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 import com.jjasystems.chirp.core.presentation.util.DeviceConfiguration
+import com.jjasystems.chirp.core.presentation.util.ObserveAsEvents
 import com.jjasystems.chirp.core.presentation.util.clearFocusOnTap
 import com.jjasystems.chirp.core.presentation.util.currentDeviceConfiguration
 import org.jetbrains.compose.resources.stringResource
@@ -40,9 +41,17 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CreateChatRoot(
+    onDismissDialog: () -> Unit,
+    onChatCreated: (Chat) -> Unit,
     viewModel: CreateChatViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is CreateChatEvent.OnChatCreated -> onChatCreated(event.chat)
+        }
+    }
 
     ChirpAdaptiveDialogSheetLayout(
         onDismiss = {
@@ -51,7 +60,16 @@ fun CreateChatRoot(
     ) {
         CreateChatScreen(
             state = state,
-            onAction = viewModel::onAction
+            onAction = { action ->
+                when (action) {
+                    CreateChatAction.OnDismissDialog -> {
+                        onDismissDialog()
+                    }
+                    else -> Unit
+                }
+
+                viewModel.onAction(action)
+            }
         )
     }
 }
@@ -99,7 +117,7 @@ fun CreateChatScreen(
                 onAction(CreateChatAction.OnAddClick)
             },
             isSearchEnabled = state.canAddParticipant,
-            isLoading = state.isAddingParticipants,
+            isLoading = state.isSearching,
             modifier = Modifier.fillMaxWidth(),
             error = state.searchError,
             onFocusChanged = {
@@ -137,7 +155,8 @@ fun CreateChatScreen(
                     style = ChirpButtonStyle.SECONDARY
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            error = state.createChatError?.asString()
         )
     }
 }
