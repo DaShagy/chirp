@@ -1,6 +1,6 @@
 package com.jjasystems.chirp.core.design_system.components.avatar
 
-data class AvatarUi(
+data class ChatParticipantUi(
     val id: String,
     val username: String,
     val initials: String,

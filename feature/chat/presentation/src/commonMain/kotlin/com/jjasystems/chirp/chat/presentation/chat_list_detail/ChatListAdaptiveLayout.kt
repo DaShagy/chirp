@@ -22,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jjasystems.chirp.chat.presentation.create_chat.CreateChatRoot
 import com.jjasystems.chirp.core.design_system.theme.extended
+import com.jjasystems.chirp.core.presentation.util.DialogSheetScopedViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -61,6 +63,7 @@ fun ChatListAdaptiveLayout(
                             text = "Chat $chatIndex",
                             modifier = Modifier
                                 .clickable {
+                                    chatListDetailViewModel.onAction(ChatListDetailAction.OnCreateChatClick)
                                     chatListDetailViewModel.onAction(ChatListDetailAction.OnChatClick(chatIndex.toString()))
                                     scope.launch {
                                         scaffoldNavigator.navigateTo(
@@ -86,4 +89,10 @@ fun ChatListAdaptiveLayout(
             }
         }
     )
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.CreateChat
+    ) {
+        CreateChatRoot()
+    }
 }
