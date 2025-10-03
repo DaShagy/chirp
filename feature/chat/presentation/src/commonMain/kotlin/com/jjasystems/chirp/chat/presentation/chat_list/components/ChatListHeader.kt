@@ -26,7 +26,7 @@ import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.logout
 import chirp.feature.chat.presentation.generated.resources.profile_settings
 import com.jjasystems.chirp.chat.presentation.components.ChatHeader
-import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUi
+import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChirpAvatar
 import com.jjasystems.chirp.core.design_system.components.brand.ChirpHorizontalDivider
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
@@ -38,7 +38,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ChatListHeader(
-    localParticipant: ChatParticipantUi?,
+    localParticipant: ChatParticipantUiModel?,
     isUserMenuOpen: Boolean,
     onUserAvatarClick: () -> Unit,
     onDismissMenu: () -> Unit,
@@ -82,7 +82,7 @@ fun ChatListHeader(
 
 @Composable
 fun ProfileAvatarSection(
-    localParticipant: ChatParticipantUi?,
+    localParticipant: ChatParticipantUiModel?,
     isMenuOpen: Boolean,
     onClick: () -> Unit,
     onDismissMenu: () -> Unit,
@@ -172,7 +172,7 @@ fun ChatListHeader_Preview() {
             modifier = Modifier.fillMaxSize()
         ) {
             ChatListHeader(
-                localParticipant = ChatParticipantUi(
+                localParticipant = ChatParticipantUiModel(
                     id = "1",
                     username = "Juan Jose",
                     initials = "JJ",

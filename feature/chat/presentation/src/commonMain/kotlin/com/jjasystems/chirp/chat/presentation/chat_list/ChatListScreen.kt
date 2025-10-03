@@ -34,7 +34,7 @@ import chirp.feature.chat.presentation.generated.resources.logout
 import com.jjasystems.chirp.chat.presentation.chat_list.components.ChatListHeader
 import com.jjasystems.chirp.chat.presentation.chat_list.components.ChatListItem
 import com.jjasystems.chirp.chat.presentation.chat_list.components.EmptyChatSection
-import com.jjasystems.chirp.chat.presentation.model.ChatUi
+import com.jjasystems.chirp.chat.presentation.model.ChatUiModel
 import com.jjasystems.chirp.core.design_system.components.brand.ChirpHorizontalDivider
 import com.jjasystems.chirp.core.design_system.components.buttons.ChirpFloatingActionButton
 import com.jjasystems.chirp.core.design_system.components.dialog.DestructiveConfirmationDialog
@@ -46,7 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ChatListRoot(
-    onChatClick: (ChatUi) -> Unit,
+    onChatClick: (ChatUiModel) -> Unit,
     onConfirmLogoutClick: () -> Unit,
     onCreateChatClick: () -> Unit,
     onProfileSettingsClick: () -> Unit,

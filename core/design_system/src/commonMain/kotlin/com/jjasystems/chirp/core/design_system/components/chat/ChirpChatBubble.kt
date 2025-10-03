@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
@@ -89,7 +90,8 @@ fun ChirpChatBubble(
                 text = formattedDateTime,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.extended.textSecondary,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End
             )
         }
 

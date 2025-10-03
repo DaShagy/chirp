@@ -22,14 +22,13 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.group_chat
 import chirp.feature.chat.presentation.generated.resources.you
 import com.jjasystems.chirp.chat.domain.model.ChatMessage
-import com.jjasystems.chirp.chat.presentation.model.ChatUi
-import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUi
+import com.jjasystems.chirp.chat.presentation.model.ChatUiModel
+import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChirpStackedAvatars
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 import com.jjasystems.chirp.core.design_system.theme.extended
@@ -37,11 +36,10 @@ import com.jjasystems.chirp.core.design_system.theme.titleXSmall
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Clock
-import kotlin.time.Instant
 
 @Composable
 fun ChatListItem(
-    chat: ChatUi,
+    chat: ChatUiModel,
     isSelected: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -149,20 +147,20 @@ fun ChatListItem_Preview() {
         ChatListItem(
             modifier = Modifier.fillMaxWidth(),
             isSelected = true,
-            chat = ChatUi(
+            chat = ChatUiModel(
                 id = "1",
-                localParticipant = ChatParticipantUi(
+                localParticipant = ChatParticipantUiModel(
                     id = "1",
                     username = "Shagy",
                     initials = "SH"
                 ),
                 otherParticipants = listOf(
-                    ChatParticipantUi(
+                    ChatParticipantUiModel(
                         id = "2",
                         username = "Shagy2",
                         initials = "S2"
                     ),
-                    ChatParticipantUi(
+                    ChatParticipantUiModel(
                         id = "3",
                         username = "Shagy3",
                         initials = "S3"

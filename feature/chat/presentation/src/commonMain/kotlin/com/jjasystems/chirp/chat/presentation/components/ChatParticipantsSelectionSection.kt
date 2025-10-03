@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUi
+import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChirpAvatar
 import com.jjasystems.chirp.core.design_system.theme.extended
 import com.jjasystems.chirp.core.design_system.theme.titleXSmall
@@ -27,9 +27,9 @@ import com.jjasystems.chirp.core.presentation.util.currentDeviceConfiguration
 
 @Composable
 fun ColumnScope.ChatParticipantsSelectionSection(
-    selectedParticipants: List<ChatParticipantUi>,
+    selectedParticipants: List<ChatParticipantUiModel>,
     modifier: Modifier = Modifier,
-    searchResult: ChatParticipantUi? = null
+    searchResult: ChatParticipantUiModel? = null
 ) {
     val deviceConfiguration = currentDeviceConfiguration()
     val rootHeightModifier = when(deviceConfiguration) {
@@ -76,7 +76,7 @@ fun ColumnScope.ChatParticipantsSelectionSection(
 
 @Composable
 fun ChatParticipantListItem(
-    participantUi: ChatParticipantUi,
+    participantUi: ChatParticipantUiModel,
     modifier: Modifier = Modifier,
 ) {
     Row(
