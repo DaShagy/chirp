@@ -29,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.add
+import chirp.feature.chat.presentation.generated.resources.create_chat
+import com.jjasystems.chirp.chat.presentation.chat_list.ChatListAction
+import com.jjasystems.chirp.chat.presentation.chat_list.ChatListRoot
 import com.jjasystems.chirp.chat.presentation.create_chat.CreateChatRoot
 import com.jjasystems.chirp.core.design_system.components.buttons.ChirpFloatingActionButton
 import com.jjasystems.chirp.core.design_system.theme.extended
@@ -40,6 +43,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ChatListAdaptiveLayout(
+    onLogout: () -> Unit,
     chatListDetailViewModel: ChatListDetailViewModel = koinViewModel()
 ) {
     val sharedState by chatListDetailViewModel.state.collectAsStateWithLifecycle()
@@ -64,43 +68,23 @@ fun ChatListAdaptiveLayout(
             .background(MaterialTheme.colorScheme.extended.surfaceLower),
         listPane = {
             AnimatedPane {
-                Scaffold(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    floatingActionButton = {
-                        ChirpFloatingActionButton(
-                            onClick = {
-                                chatListDetailViewModel.onAction(ChatListDetailAction.OnCreateChatClick)
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = stringResource(Res.string.add)
+                ChatListRoot(
+                    onChatClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailAction.OnChatClick(it.id))
+                        scope.launch {
+                            scaffoldNavigator.navigateTo(
+                                ListDetailPaneScaffoldRole.Detail
                             )
                         }
+                    },
+                    onConfirmLogoutClick =  onLogout,
+                    onCreateChatClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailAction.OnCreateChatClick)
+                    },
+                    onProfileSettingsClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailAction.OnProfileSettingsClick)
                     }
-                ) { innerPadding ->
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = innerPadding
-                    ) {
-                        items(100) { chatIndex ->
-                            Text(
-                                text = "Chat $chatIndex",
-                                modifier = Modifier
-                                    .clickable {
-                                        chatListDetailViewModel.onAction(ChatListDetailAction.OnChatClick(chatIndex.toString()))
-                                        scope.launch {
-                                            scaffoldNavigator.navigateTo(
-                                                ListDetailPaneScaffoldRole.Detail
-                                            )
-                                        }
-                                    }
-                                    .padding(16.dp)
-                            )
-                        }
-                    }
-                }
+                )
             }
         },
         detailPane = {
