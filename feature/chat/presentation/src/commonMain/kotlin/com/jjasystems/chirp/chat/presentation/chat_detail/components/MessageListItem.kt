@@ -2,6 +2,7 @@ package com.jjasystems.chirp.chat.presentation.chat_detail.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -140,11 +141,11 @@ fun MessageListItemLocalFailed_Preview() {
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun MessageListItemOpenMenu_Preview() {
     ChirpTheme {
         Box(
-            modifier = Modifier.height(400.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
             MessageListItem(
                 ChatMessageUiModel.LocalUserMessageUiModel(

@@ -1,34 +1,29 @@
 package com.jjasystems.chirp.chat.presentation.chat_list.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import chirp.core.design_system.generated.resources.icon_log_out
-import chirp.core.design_system.generated.resources.icon_users
 import chirp.core.design_system.generated.resources.logo_chirp
 import chirp.feature.chat.presentation.generated.resources.Res
+import chirp.feature.chat.presentation.generated.resources.icon_users
 import chirp.feature.chat.presentation.generated.resources.logout
 import chirp.feature.chat.presentation.generated.resources.profile_settings
 import com.jjasystems.chirp.chat.presentation.components.ChatHeader
 import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChirpAvatar
-import com.jjasystems.chirp.core.design_system.components.brand.ChirpHorizontalDivider
+import com.jjasystems.chirp.core.design_system.components.dropdown.ChirpDropdownMenu
+import com.jjasystems.chirp.core.design_system.components.dropdown.ChirpDropdownMenuItemUiModel
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 import com.jjasystems.chirp.core.design_system.theme.extended
 import org.jetbrains.compose.resources.stringResource
@@ -101,66 +96,24 @@ fun ProfileAvatarSection(
             )
         }
 
-        DropdownMenu(
-            expanded = isMenuOpen,
-            shape = RoundedCornerShape(16.dp),
-            onDismissRequest = onDismissMenu,
-            containerColor = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.extended.surfaceOutline
+        ChirpDropdownMenu(
+            isOpen = isMenuOpen,
+            onDismiss = onDismissMenu,
+            menuItems = listOf(
+                ChirpDropdownMenuItemUiModel(
+                    title = stringResource(Res.string.profile_settings),
+                    icon = vectorResource(Res.drawable.icon_users),
+                    contentColor = MaterialTheme.colorScheme.extended.textSecondary,
+                    onClick = onProfileSettingsClick
+                ),
+                ChirpDropdownMenuItemUiModel(
+                    title = stringResource(Res.string.logout),
+                    icon = vectorResource(DesignSystemRes.drawable.icon_log_out),
+                    contentColor = MaterialTheme.colorScheme.extended.destructiveHover,
+                    onClick = onLogoutClick
+                )
             )
-        ) {
-            DropdownMenuItem(
-                 text = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(DesignSystemRes.drawable.icon_users),
-                            contentDescription = stringResource(Res.string.profile_settings),
-                            tint = MaterialTheme.colorScheme.extended.textSecondary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = stringResource(Res.string.profile_settings),
-                            color = MaterialTheme.colorScheme.extended.textSecondary,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                },
-                onClick = {
-                    onDismissMenu()
-                    onProfileSettingsClick()
-                }
-            )
-
-            ChirpHorizontalDivider()
-
-            DropdownMenuItem(
-                text = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(DesignSystemRes.drawable.icon_log_out),
-                            contentDescription = stringResource(Res.string.logout),
-                            tint = MaterialTheme.colorScheme.extended.destructiveHover,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = stringResource(Res.string.logout),
-                            color = MaterialTheme.colorScheme.extended.destructiveHover,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                },
-                onClick = {
-                    onDismissMenu()
-                    onLogoutClick()
-                }
-            )
-        }
+        )
     }
 }
 

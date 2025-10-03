@@ -27,6 +27,7 @@ import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.group_chat
 import chirp.feature.chat.presentation.generated.resources.you
 import com.jjasystems.chirp.chat.domain.model.ChatMessage
+import com.jjasystems.chirp.chat.presentation.components.ChatItemHeaderRow
 import com.jjasystems.chirp.chat.presentation.model.ChatUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChirpStackedAvatars
@@ -63,50 +64,11 @@ fun ChatListItem(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                ChirpStackedAvatars(
-                    avatars = chat.otherParticipants
-                )
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = if(!isGroupChat) {
-                            chat.otherParticipants.first().username
-                        } else {
-                            stringResource(Res.string.group_chat)
-                        },
-                        style = MaterialTheme.typography.titleXSmall,
-                        color = MaterialTheme.colorScheme.extended.textPrimary,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.fillMaxWidth(),
-                        maxLines = 1
-                    )
-
-                    if (isGroupChat) {
-                        val you = stringResource(Res.string.you)
-                        val formattedUsernames = remember(chat.otherParticipants){
-                            "$you, " + chat.otherParticipants.joinToString {
-                                it.username
-                            }
-                        }
-                        Text(
-                            text = formattedUsernames,
-                            color = MaterialTheme.colorScheme.extended.textPlaceholder,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.fillMaxWidth(),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-            }
+            ChatItemHeaderRow(
+                chat = chat,
+                isGroupChat = isGroupChat,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             chat.lastMessage?.let {
                 val previewMessage = buildAnnotatedString {
