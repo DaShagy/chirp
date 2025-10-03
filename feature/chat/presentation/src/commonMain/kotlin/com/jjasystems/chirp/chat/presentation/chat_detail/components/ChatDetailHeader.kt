@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -40,10 +41,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ChatDetailHeader(
-    chat: ChatUiModel,
+    chat: ChatUiModel?,
     isDetailPresent: Boolean,
     isChatDropdownOpen: Boolean,
-    isGroupChat: Boolean,
     onChatOptionsClick: () -> Unit,
     onDismissChatOptions: () -> Unit,
     onManageChatClick: () -> Unit,
@@ -71,15 +71,19 @@ fun ChatDetailHeader(
             }
         }
 
-        ChatItemHeaderRow(
-            chat = chat,
-            isGroupChat = isGroupChat,
-            modifier = Modifier
-                .weight(1f)
-                .clickable {
-                    onManageChatClick()
-                }
-        )
+        chat?.let {
+            val isGroupChat = chat.otherParticipants.size > 1
+
+            ChatItemHeaderRow(
+                chat = chat,
+                isGroupChat = isGroupChat,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        onManageChatClick()
+                    }
+            )
+        } ?: Spacer(modifier = Modifier.weight(1f))
 
         Box {
             ChirpIconButton(
@@ -147,7 +151,6 @@ fun ChatDetailHeader_Preview() {
                         lastMessageSenderUsername = null
                     ),
                     isDetailPresent = false,
-                    isGroupChat = true,
                     isChatDropdownOpen = true,
                     onChatOptionsClick = {},
                     onManageChatClick = {},

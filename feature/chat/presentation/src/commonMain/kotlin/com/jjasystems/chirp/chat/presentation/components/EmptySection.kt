@@ -1,4 +1,4 @@
-package com.jjasystems.chirp.chat.presentation.chat_list.components
+package com.jjasystems.chirp.chat.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +25,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun EmptyChatSection(
+fun EmptySection(
+    title: String,
+    description: String,
     modifier: Modifier = Modifier
 ) {
     val configuration = currentDeviceConfiguration()
@@ -40,7 +42,7 @@ fun EmptyChatSection(
     ) {
         Image(
             painter = painterResource(Res.drawable.empty_chat),
-            contentDescription = stringResource(Res.string.no_messages),
+            contentDescription = title,
             modifier = Modifier.size(
                 size = if(configuration == DeviceConfiguration.MOBILE_LANDSCAPE) 125.dp
                 else 200.dp
@@ -50,12 +52,12 @@ fun EmptyChatSection(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = stringResource(Res.string.no_messages),
+            text = title,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.extended.textPrimary
         )
         Text(
-            text = stringResource(Res.string.no_messages_subtitle),
+            text = description,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.extended.textSecondary
         )
@@ -66,6 +68,9 @@ fun EmptyChatSection(
 @Preview
 fun EmptyChatSection_Preview() {
     ChirpTheme {
-        EmptyChatSection()
+        EmptySection(
+            title = stringResource(Res.string.no_messages),
+            description = stringResource(Res.string.no_messages_subtitle)
+        )
     }
 }

@@ -4,24 +4,24 @@ import com.jjasystems.chirp.chat.domain.model.ChatMessageDeliveryStatus
 import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.presentation.util.UiText
 
-sealed interface ChatMessageUiModel {
+sealed class ChatMessageUiModel(open val id: String) {
     data class LocalUserMessageUiModel(
-        val id: String,
+        override val id: String,
         val content: String,
         val deliveryStatus: ChatMessageDeliveryStatus,
         val formattedSentTime: UiText,
         val isMenuOpen: Boolean
-    ): ChatMessageUiModel
+    ): ChatMessageUiModel(id)
 
     data class OtherUserMessageUiModel(
-        val id: String,
+        override val id: String,
         val content: String,
         val formattedSentTime: UiText,
         val sender: ChatParticipantUiModel
-    ): ChatMessageUiModel
+    ): ChatMessageUiModel(id)
 
     data class DateSeparatorUiModel(
-        val id: String,
+        override val id: String,
         val date: UiText
-    ): ChatMessageUiModel
+    ): ChatMessageUiModel(id)
 }

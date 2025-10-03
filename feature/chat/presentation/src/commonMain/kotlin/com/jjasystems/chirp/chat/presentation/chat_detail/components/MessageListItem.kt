@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jjasystems.chirp.chat.domain.model.ChatMessageDeliveryStatus
 import com.jjasystems.chirp.chat.presentation.model.ChatMessageUiModel
+import com.jjasystems.chirp.chat.presentation.util.getChatBubbleColorForUser
 import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
 import com.jjasystems.chirp.core.design_system.theme.extended
@@ -24,10 +24,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MessageListItem(
     messageUi: ChatMessageUiModel,
-    onMessageLongClick: () -> Unit,
+    onMessageLongClick: (ChatMessageUiModel.LocalUserMessageUiModel) -> Unit,
     onDismissMessageMenu: () -> Unit,
-    onRetryClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onRetryMessageClick: (ChatMessageUiModel.LocalUserMessageUiModel) -> Unit,
+    onDeleteMessageClick: (ChatMessageUiModel.LocalUserMessageUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -43,15 +43,16 @@ fun MessageListItem(
             is ChatMessageUiModel.LocalUserMessageUiModel -> {
                 LocalUserMessage(
                     message = messageUi,
-                    onMessageLongClick = onMessageLongClick,
+                    onMessageLongClick = { onMessageLongClick(messageUi) },
                     onDismissMessageMenu = onDismissMessageMenu,
-                    onDeleteClick = onDeleteClick,
-                    onRetryClick = onRetryClick
+                    onDeleteClick = { onDeleteMessageClick(messageUi) },
+                    onRetryClick = { onRetryMessageClick(messageUi) }
                 )
             }
             is ChatMessageUiModel.OtherUserMessageUiModel -> {
                 OtherUserMessage(
-                    message = messageUi
+                    message = messageUi,
+                    color = getChatBubbleColorForUser(messageUi.sender.id)
                 )
             }
         }
@@ -94,8 +95,8 @@ fun MessageListItemLocalSending_Preview() {
             ),
             onMessageLongClick = {},
             onDismissMessageMenu = {},
-            onDeleteClick = {},
-            onRetryClick = {}
+            onDeleteMessageClick = {},
+            onRetryMessageClick = {}
         )
     }
 }
@@ -114,8 +115,8 @@ fun MessageListItemLocalSent_Preview() {
             ),
             onMessageLongClick = {},
             onDismissMessageMenu = {},
-            onDeleteClick = {},
-            onRetryClick = {}
+            onDeleteMessageClick = {},
+            onRetryMessageClick = {}
         )
     }
 }
@@ -134,8 +135,8 @@ fun MessageListItemLocalFailed_Preview() {
             ),
             onMessageLongClick = {},
             onDismissMessageMenu = {},
-            onDeleteClick = {},
-            onRetryClick = {}
+            onDeleteMessageClick = {},
+            onRetryMessageClick = {}
         )
     }
 }
@@ -157,8 +158,8 @@ fun MessageListItemOpenMenu_Preview() {
                 ),
                 onMessageLongClick = {},
                 onDismissMessageMenu = {},
-                onDeleteClick = {},
-                onRetryClick = {}
+                onDeleteMessageClick = {},
+                onRetryMessageClick = {}
             )
         }
     }
@@ -182,8 +183,8 @@ fun MessageListItemOther_Preview() {
             ),
             onMessageLongClick = {},
             onDismissMessageMenu = {},
-            onDeleteClick = {},
-            onRetryClick = {}
+            onDeleteMessageClick = {},
+            onRetryMessageClick = {}
         )
     }
 }
