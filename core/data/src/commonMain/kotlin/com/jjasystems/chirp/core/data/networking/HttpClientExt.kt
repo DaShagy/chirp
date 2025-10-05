@@ -54,7 +54,7 @@ suspend inline fun <reified Response: Any> HttpClient.get(
     }
 }
 
-suspend inline fun <reified Request, reified Response: Any> HttpClient.delete(
+suspend inline fun <reified Response: Any> HttpClient.delete(
     route: String,
     queryParams: Map<String, Any> = mapOf(),
     crossinline builder: HttpRequestBuilder.() -> Unit = {}
