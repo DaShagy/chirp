@@ -1,11 +1,12 @@
-package com.jjasystems.chirp.chat.presentation.create_chat
+package com.jjasystems.chirp.chat.presentation.components.manage_chat
 
 import androidx.compose.foundation.text.input.TextFieldState
 import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
 import com.jjasystems.chirp.core.presentation.util.UiText
 
-data class CreateChatState(
+data class ManageChatState(
     val queryTextState: TextFieldState = TextFieldState(),
+    val existingChatParticipants: List<ChatParticipantUiModel> = emptyList(),
     val selectedChatParticipants: List<ChatParticipantUiModel> = emptyList(),
     val isSearching: Boolean = false,
     val canAddParticipant: Boolean = false,

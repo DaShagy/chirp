@@ -1,4 +1,4 @@
-package com.jjasystems.chirp.chat.presentation.components
+package com.jjasystems.chirp.chat.presentation.components.manage_chat
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

@@ -1,11 +1,11 @@
-package com.jjasystems.chirp.chat.presentation.create_chat
+package com.jjasystems.chirp.chat.presentation.manage_chat
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chirp.feature.chat.presentation.generated.resources.Res
-import chirp.feature.chat.presentation.generated.resources.create_chat
-import com.jjasystems.chirp.chat.domain.model.Chat
+import chirp.feature.chat.presentation.generated.resources.chat_members
+import chirp.feature.chat.presentation.generated.resources.save
 import com.jjasystems.chirp.chat.presentation.components.manage_chat.ManageChatAction
 import com.jjasystems.chirp.chat.presentation.components.manage_chat.ManageChatScreen
 import com.jjasystems.chirp.core.design_system.components.dialog.ChirpAdaptiveDialogSheetLayout
@@ -14,16 +14,16 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CreateChatRoot(
+fun ManageChatRoot(
     onDismissDialog: () -> Unit,
-    onChatCreated: (Chat) -> Unit,
-    viewModel: CreateChatViewModel = koinViewModel()
+    onMembersAdded: () -> Unit,
+    viewModel: ManageChatViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
-            is CreateChatEvent.OnChatCreated -> onChatCreated(event.chat)
+        when(event) {
+            ManageChatEvent.OnMembersAdded -> onMembersAdded()
         }
     }
 
@@ -31,8 +31,8 @@ fun CreateChatRoot(
         onDismiss = onDismissDialog
     ) {
         ManageChatScreen(
-            headerText = stringResource(Res.string.create_chat),
-            primaryButtonText = stringResource(Res.string.create_chat),
+            headerText = stringResource(Res.string.chat_members),
+            primaryButtonText = stringResource(Res.string.save),
             state = state,
             onAction = { action ->
                 when (action) {

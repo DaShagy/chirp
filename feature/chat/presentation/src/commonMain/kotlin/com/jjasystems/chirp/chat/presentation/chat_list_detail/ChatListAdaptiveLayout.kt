@@ -35,7 +35,9 @@ import chirp.feature.chat.presentation.generated.resources.create_chat
 import com.jjasystems.chirp.chat.presentation.chat_detail.ChatDetailRoot
 import com.jjasystems.chirp.chat.presentation.chat_list.ChatListAction
 import com.jjasystems.chirp.chat.presentation.chat_list.ChatListRoot
+import com.jjasystems.chirp.chat.presentation.components.manage_chat.ManageChatAction
 import com.jjasystems.chirp.chat.presentation.create_chat.CreateChatRoot
+import com.jjasystems.chirp.chat.presentation.manage_chat.ManageChatRoot
 import com.jjasystems.chirp.core.design_system.components.buttons.ChirpFloatingActionButton
 import com.jjasystems.chirp.core.design_system.theme.extended
 import com.jjasystems.chirp.core.presentation.util.DialogSheetScopedViewModel
@@ -103,6 +105,9 @@ fun ChatListAdaptiveLayout(
                 ChatDetailRoot(
                     chatId = sharedState.selectedChatId,
                     isDetailPresent = detailPane == PaneAdaptedValue.Expanded && listPane == PaneAdaptedValue.Expanded,
+                    onChatMembersClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailAction.OnManageChatClick)
+                    },
                     onBack = {
                         scope.launch {
                             if(scaffoldNavigator.canNavigateBack()) {
@@ -128,6 +133,19 @@ fun ChatListAdaptiveLayout(
                 scope.launch {
                     scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                 }
+            }
+        )
+    }
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.ManageChat
+    ) {
+        ManageChatRoot(
+            onDismissDialog = {
+                chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
+            },
+            onMembersAdded = {
+                chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
             }
         )
     }
