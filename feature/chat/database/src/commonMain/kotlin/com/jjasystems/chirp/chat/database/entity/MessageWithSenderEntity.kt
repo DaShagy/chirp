@@ -3,7 +3,7 @@ package com.jjasystems.chirp.chat.database.entity
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class MessageWithSender(
+data class MessageWithSenderEntity(
     @Embedded
     val message: ChatMessageEntity,
     @Relation(

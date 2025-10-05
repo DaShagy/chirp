@@ -24,6 +24,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -164,6 +165,10 @@ fun ChatDetailScreen(
                                 onAction(ChatDetailAction.OnSendMessageClick)
                             },
                             modifier = Modifier.fillMaxWidth()
+                                .padding(
+                                    vertical = 8.dp,
+                                    horizontal = 16.dp
+                                )
                         )
                     }
                 }
@@ -175,15 +180,20 @@ fun ChatDetailScreen(
                 AnimatedVisibility(
                     visible = configuration.isWideScreen && state.chatUi != null
                 ) {
-                    MessageBox(
-                        messageTextFieldState = state.messageTextFieldState,
-                        isTextInputEnabled = state.canSendMessage,
-                        connectionState = state.connectionState,
-                        onSendClick = {
-                            onAction(ChatDetailAction.OnSendMessageClick)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    DynamicRoundedCornerColumn(
+                        isCornersRounded = configuration.isWideScreen
+                    ) {
+                        MessageBox(
+                            messageTextFieldState = state.messageTextFieldState,
+                            isTextInputEnabled = state.canSendMessage,
+                            connectionState = state.connectionState,
+                            onSendClick = {
+                                onAction(ChatDetailAction.OnSendMessageClick)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(8.dp)
+                        )
+                    }
                 }
             }
         }
@@ -199,8 +209,9 @@ private fun DynamicRoundedCornerColumn(
     Column(
         modifier = modifier
             .shadow(
-                elevation = if(isCornersRounded) 4.dp else 0.dp,
-                shape = if(isCornersRounded) RoundedCornerShape(16.dp) else RectangleShape
+                elevation = if(isCornersRounded) 8.dp else 0.dp,
+                shape = if(isCornersRounded) RoundedCornerShape(16.dp) else RectangleShape,
+                spotColor = Color.Black.copy(alpha = 0.2f)
             )
             .background(
                 color = MaterialTheme.colorScheme.surface,

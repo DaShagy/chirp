@@ -8,10 +8,14 @@ import com.jjasystems.chirp.chat.database.entity.ChatWithParticipants
 import com.jjasystems.chirp.chat.domain.chat.ChatRepository
 import com.jjasystems.chirp.chat.domain.chat.ChatService
 import com.jjasystems.chirp.chat.domain.model.Chat
+import com.jjasystems.chirp.chat.domain.model.ChatInfo
 import com.jjasystems.chirp.core.domain.util.DataError
+import com.jjasystems.chirp.core.domain.util.EmptyResult
 import com.jjasystems.chirp.core.domain.util.Result
+import com.jjasystems.chirp.core.domain.util.asEmptyResult
 import com.jjasystems.chirp.core.domain.util.onSuccess
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 
 class OfflineFirstChatRepository(
@@ -23,6 +27,12 @@ class OfflineFirstChatRepository(
             .map { chatWithParticipantsList ->
                 chatWithParticipantsList.map { it.toDomain() }
             }
+    }
+
+    override fun getChatInfoById(chatId: String): Flow<ChatInfo> {
+        return db.chatDao.getChatInfoById(chatId)
+            .filterNotNull()
+            .map { it.toDomain() }
     }
 
     override suspend fun fetchChats(): Result<List<Chat>, DataError.Remote> {
@@ -43,5 +53,19 @@ class OfflineFirstChatRepository(
                     messageDao = db.chatMessageDao
                 )
             }
+    }
+
+    override suspend fun fetchChatById(chatId: String): EmptyResult<DataError.Remote> {
+        return chatService
+            .getChatById(chatId)
+            .onSuccess { chat ->
+                db.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = db.chatParticipantDao,
+                    crossRefDao = db.chatParticipantsCrossRefDao
+                )
+            }
+            .asEmptyResult()
     }
 }

@@ -31,4 +31,10 @@ class KtorChatService(
             chats.map { it.toDomain() }
         }
     }
+
+    override suspend fun getChatById(chatId: String): Result<Chat, DataError.Remote> {
+        return httpClient.get<ChatSerializable>(
+            route = "/chat/$chatId"
+        ).map { it.toDomain() }
+    }
 }

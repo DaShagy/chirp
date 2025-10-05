@@ -46,12 +46,12 @@ fun ChirpMultiLineTextField(
         modifier = modifier
             .background(
                 color = MaterialTheme.colorScheme.extended.surfaceLower,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.extended.surfaceOutline,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(
                 vertical = 12.dp,

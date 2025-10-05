@@ -2,9 +2,11 @@ package com.jjasystems.chirp.chat.data.mapper
 
 import com.jjasystems.chirp.chat.data.dto.ChatMessageSerializable
 import com.jjasystems.chirp.chat.database.entity.ChatMessageEntity
+import com.jjasystems.chirp.chat.database.entity.MessageWithSenderEntity
 import com.jjasystems.chirp.chat.database.view.LastMessageView
 import com.jjasystems.chirp.chat.domain.model.ChatMessage
 import com.jjasystems.chirp.chat.domain.model.ChatMessageDeliveryStatus
+import com.jjasystems.chirp.chat.domain.model.MessageWithSender
 import kotlin.time.Instant
 
 fun ChatMessageSerializable.toDomain(): ChatMessage {
@@ -41,7 +43,7 @@ fun ChatMessage.toEntity(): ChatMessageEntity {
     )
 }
 
-fun ChatMessage.toLastMessageView(): LastMessageView{
+fun ChatMessage.toLastMessageView(): LastMessageView {
     return LastMessageView(
         messageId = id,
         chatId = chatId,
@@ -49,5 +51,24 @@ fun ChatMessage.toLastMessageView(): LastMessageView{
         content = content,
         timestamp = createdAt.toEpochMilliseconds(),
         deliveryStatus = deliveryStatus.name
+    )
+}
+
+fun ChatMessageEntity.toDomain(): ChatMessage {
+    return ChatMessage(
+        id = messageId,
+        chatId = chatId,
+        content = content,
+        createdAt = Instant.fromEpochMilliseconds(timestamp),
+        senderId = senderId,
+        deliveryStatus = ChatMessageDeliveryStatus.SENT
+    )
+}
+
+fun MessageWithSenderEntity.toDomain(): MessageWithSender {
+    return MessageWithSender(
+        message = message.toDomain(),
+        sender = sender.toDomain(),
+        deliveryStatus = ChatMessageDeliveryStatus.valueOf(message.deliveryStatus)
     )
 }
