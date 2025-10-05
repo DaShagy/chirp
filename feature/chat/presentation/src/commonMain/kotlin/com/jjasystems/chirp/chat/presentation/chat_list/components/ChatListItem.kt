@@ -27,6 +27,7 @@ import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.group_chat
 import chirp.feature.chat.presentation.generated.resources.you
 import com.jjasystems.chirp.chat.domain.model.ChatMessage
+import com.jjasystems.chirp.chat.domain.model.ChatMessageDeliveryStatus
 import com.jjasystems.chirp.chat.presentation.components.ChatItemHeaderRow
 import com.jjasystems.chirp.chat.presentation.model.ChatUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChatParticipantUiModel
@@ -134,7 +135,8 @@ fun ChatListItem_Preview() {
                     content = "This is a last chat message that was sent by Shagy3 " +
                             "and is long enough to show ellipsis in the preview",
                     createdAt = Clock.System.now(),
-                    senderId = "3"
+                    senderId = "3",
+                    deliveryStatus = ChatMessageDeliveryStatus.SENT
                 ),
                 lastMessageSenderUsername = "Shagy3"
             )

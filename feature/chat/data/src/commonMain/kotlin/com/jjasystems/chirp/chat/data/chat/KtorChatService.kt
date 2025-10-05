@@ -5,6 +5,7 @@ import com.jjasystems.chirp.chat.data.dto.request.CreateChatRequest
 import com.jjasystems.chirp.chat.data.mapper.toDomain
 import com.jjasystems.chirp.chat.domain.chat.ChatService
 import com.jjasystems.chirp.chat.domain.model.Chat
+import com.jjasystems.chirp.core.data.networking.get
 import com.jjasystems.chirp.core.data.networking.post
 import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.Result
@@ -21,5 +22,13 @@ class KtorChatService(
                 otherUserIds = otherUserIds
             )
         ).map { it.toDomain() }
+    }
+
+    override suspend fun getChats(): Result<List<Chat>, DataError.Remote> {
+        return httpClient.get<List<ChatSerializable>>(
+            route = "/chat"
+        ).map { chats ->
+            chats.map { it.toDomain() }
+        }
     }
 }
