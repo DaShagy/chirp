@@ -1,6 +1,8 @@
 package com.jjasystems.chirp.chat.data.mapper
 
 import com.jjasystems.chirp.chat.data.dto.ChatMessageSerializable
+import com.jjasystems.chirp.chat.data.dto.websocket.IncomingWebSocketDto
+import com.jjasystems.chirp.chat.data.dto.websocket.OutgoingWebSocketDto
 import com.jjasystems.chirp.chat.database.entity.ChatMessageEntity
 import com.jjasystems.chirp.chat.database.entity.MessageWithSenderEntity
 import com.jjasystems.chirp.chat.database.view.LastMessageView
@@ -70,5 +72,24 @@ fun MessageWithSenderEntity.toDomain(): MessageWithSender {
         message = message.toDomain(),
         sender = sender.toDomain(),
         deliveryStatus = ChatMessageDeliveryStatus.valueOf(message.deliveryStatus)
+    )
+}
+
+fun ChatMessage.toNewMessage(): OutgoingWebSocketDto.NewMessage {
+    return OutgoingWebSocketDto.NewMessage(
+        messageId = id,
+        chatId = chatId,
+        content = content
+    )
+}
+
+fun IncomingWebSocketDto.NewMessageDto.toEntity(): ChatMessageEntity {
+    return ChatMessageEntity(
+        messageId = id,
+        chatId = chatId,
+        senderId = senderId,
+        content = content,
+        timestamp = Instant.parse(createdAt).toEpochMilliseconds(),
+        deliveryStatus = ChatMessageDeliveryStatus.SENT.name
     )
 }
