@@ -23,7 +23,7 @@ actual class ConnectionErrorHandler {
         }
     }
 
-    actual fun transformException(exception: Exception): Throwable {
+    actual fun transformException(exception: Throwable): Throwable {
         return exception
     }
 

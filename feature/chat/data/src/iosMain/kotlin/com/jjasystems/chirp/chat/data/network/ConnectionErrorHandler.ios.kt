@@ -24,7 +24,7 @@ actual class ConnectionErrorHandler {
         } else ConnectionState.UNKNOWN_ERROR
     }
 
-    actual fun transformException(exception: Exception): Throwable {
+    actual fun transformException(exception: Throwable): Throwable {
         if(exception is CancellationException) {
             val cause = exception.cause ?: return exception
             val isDarwinException = cause.message?.contains("DarwinHttpRequestException") == true
