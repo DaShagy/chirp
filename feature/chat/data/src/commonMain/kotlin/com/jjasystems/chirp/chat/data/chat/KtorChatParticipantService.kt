@@ -4,7 +4,7 @@ import com.jjasystems.chirp.chat.data.dto.ChatParticipantSerializable
 import com.jjasystems.chirp.chat.data.mapper.toDomain
 import com.jjasystems.chirp.chat.domain.chat.ChatParticipantService
 import com.jjasystems.chirp.chat.domain.model.ChatParticipant
-import com.jjasystems.chirp.core.data.networking.get
+import com.jjasystems.chirp.core.data.network.get
 import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.Result
 import com.jjasystems.chirp.core.domain.util.map

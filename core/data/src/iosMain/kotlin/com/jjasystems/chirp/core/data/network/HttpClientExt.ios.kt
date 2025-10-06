@@ -1,4 +1,4 @@
-package com.jjasystems.chirp.core.data.networking
+package com.jjasystems.chirp.core.data.network
 
 import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.Result

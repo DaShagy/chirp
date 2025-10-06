@@ -1,4 +1,4 @@
-package com.jjasystems.chirp.core.data.networking
+package com.jjasystems.chirp.core.data.network
 
 import com.jjasystems.chirp.core.data.dto.AuthInfoSerializable
 import com.jjasystems.chirp.core.data.dto.request.RefreshRequest

@@ -6,8 +6,8 @@ import com.jjasystems.chirp.core.data.dto.request.LoginRequest
 import com.jjasystems.chirp.core.data.dto.request.RegisterRequest
 import com.jjasystems.chirp.core.data.dto.request.ResetPasswordRequest
 import com.jjasystems.chirp.core.data.mapper.toDomain
-import com.jjasystems.chirp.core.data.networking.get
-import com.jjasystems.chirp.core.data.networking.post
+import com.jjasystems.chirp.core.data.network.get
+import com.jjasystems.chirp.core.data.network.post
 import com.jjasystems.chirp.core.domain.auth.AuthInfo
 import com.jjasystems.chirp.core.domain.auth.AuthService
 import com.jjasystems.chirp.core.domain.util.DataError

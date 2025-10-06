@@ -13,7 +13,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-expect  val platformChatDataModule: Module
+expect val platformChatDataModule: Module
 
 val chatDataModule = module {
     includes(platformChatDataModule)

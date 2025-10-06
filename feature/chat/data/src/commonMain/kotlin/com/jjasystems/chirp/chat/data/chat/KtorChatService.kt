@@ -6,16 +6,15 @@ import com.jjasystems.chirp.chat.data.dto.request.ParticipantsRequest
 import com.jjasystems.chirp.chat.data.mapper.toDomain
 import com.jjasystems.chirp.chat.domain.chat.ChatService
 import com.jjasystems.chirp.chat.domain.model.Chat
-import com.jjasystems.chirp.core.data.networking.delete
-import com.jjasystems.chirp.core.data.networking.get
-import com.jjasystems.chirp.core.data.networking.post
+import com.jjasystems.chirp.core.data.network.delete
+import com.jjasystems.chirp.core.data.network.get
+import com.jjasystems.chirp.core.data.network.post
 import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.EmptyResult
 import com.jjasystems.chirp.core.domain.util.Result
 import com.jjasystems.chirp.core.domain.util.asEmptyResult
 import com.jjasystems.chirp.core.domain.util.map
 import io.ktor.client.HttpClient
-import io.ktor.client.request.post
 
 class KtorChatService(
     private val httpClient: HttpClient
