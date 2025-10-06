@@ -5,13 +5,16 @@ import com.jjasystems.chirp.chat.data.chat.KtorChatParticipantService
 import com.jjasystems.chirp.chat.data.chat.KtorChatService
 import com.jjasystems.chirp.chat.data.chat.OfflineFirstChatRepository
 import com.jjasystems.chirp.chat.data.chat.WebSocketChatConnectionClient
+import com.jjasystems.chirp.chat.data.message.KtorChatMessageService
 import com.jjasystems.chirp.chat.data.message.OfflineFirstMessageRepository
+import com.jjasystems.chirp.chat.data.network.ConnectionRetryHandler
 import com.jjasystems.chirp.chat.data.network.KtorWebSocketConnector
 import com.jjasystems.chirp.chat.database.DatabaseFactory
 import com.jjasystems.chirp.chat.domain.chat.ChatConnectionClient
 import com.jjasystems.chirp.chat.domain.chat.ChatParticipantService
 import com.jjasystems.chirp.chat.domain.chat.ChatRepository
 import com.jjasystems.chirp.chat.domain.chat.ChatService
+import com.jjasystems.chirp.chat.domain.message.ChatMessageService
 import com.jjasystems.chirp.chat.domain.message.MessageRepository
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
@@ -29,7 +32,9 @@ val chatDataModule = module {
     singleOf(::OfflineFirstChatRepository) bind ChatRepository::class
     singleOf(::OfflineFirstMessageRepository) bind MessageRepository::class
     singleOf(::WebSocketChatConnectionClient) bind ChatConnectionClient::class
+    singleOf(::ConnectionRetryHandler)
     singleOf(::KtorWebSocketConnector)
+    singleOf(::KtorChatMessageService) bind ChatMessageService::class
 
     single {
         Json {

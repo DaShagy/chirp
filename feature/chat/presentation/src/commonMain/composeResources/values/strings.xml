@@ -13,6 +13,8 @@
     <string name="failed">Failed</string>
     <string name="save">Save</string>
     <string name="retry">Retry</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
     <string name="go_back">Go back</string>
     <string name="open_chat_options_menu">Open chat options menu</string>
     <string name="chat_members">Chat members</string>
