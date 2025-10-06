@@ -2,6 +2,7 @@ package com.jjasystems.chirp.chat.data.chat
 
 import com.jjasystems.chirp.chat.data.dto.ChatSerializable
 import com.jjasystems.chirp.chat.data.dto.request.CreateChatRequest
+import com.jjasystems.chirp.chat.data.dto.request.ParticipantsRequest
 import com.jjasystems.chirp.chat.data.mapper.toDomain
 import com.jjasystems.chirp.chat.domain.chat.ChatService
 import com.jjasystems.chirp.chat.domain.model.Chat
@@ -14,6 +15,7 @@ import com.jjasystems.chirp.core.domain.util.Result
 import com.jjasystems.chirp.core.domain.util.asEmptyResult
 import com.jjasystems.chirp.core.domain.util.map
 import io.ktor.client.HttpClient
+import io.ktor.client.request.post
 
 class KtorChatService(
     private val httpClient: HttpClient
@@ -45,5 +47,17 @@ class KtorChatService(
         return httpClient.delete<Unit>(
             route = "/chat/$chatId/leave"
         ).asEmptyResult()
+    }
+
+    override suspend fun addParticipantsToChat(
+        chatId: String,
+        userIds: List<String>
+    ): Result<Chat, DataError.Remote> {
+        return httpClient.post<ParticipantsRequest, ChatSerializable>(
+            route = "/chat/$chatId/add",
+            body = ParticipantsRequest(
+                userIds = userIds
+            )
+        ).map { it.toDomain() }
     }
 }
