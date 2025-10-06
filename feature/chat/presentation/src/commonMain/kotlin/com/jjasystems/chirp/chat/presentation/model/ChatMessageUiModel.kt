@@ -9,8 +9,7 @@ sealed class ChatMessageUiModel(open val id: String) {
         override val id: String,
         val content: String,
         val deliveryStatus: ChatMessageDeliveryStatus,
-        val formattedSentTime: UiText,
-        val isMenuOpen: Boolean
+        val formattedSentTime: UiText
     ): ChatMessageUiModel(id)
 
     data class OtherUserMessageUiModel(

@@ -25,7 +25,7 @@ sealed interface IncomingWebSocketDto {
 
     @Serializable
     data class MessageDeletedDto(
-        val id: String,
+        val messageId: String,
         val chatId: String,
         val type: IncomingWebSocketType = IncomingWebSocketType.MESSAGE_DELETED
     ): IncomingWebSocketDto

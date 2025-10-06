@@ -77,7 +77,7 @@ class WebSocketChatConnectionClient(
     }
 
     private suspend fun deleteMessage(message: IncomingWebSocketDto.MessageDeletedDto) {
-        db.chatMessageDao.deleteMessageById(message.id)
+        db.chatMessageDao.deleteMessageById(message.messageId)
     }
 
     private suspend fun handleNewMessage(message: IncomingWebSocketDto.NewMessageDto) {

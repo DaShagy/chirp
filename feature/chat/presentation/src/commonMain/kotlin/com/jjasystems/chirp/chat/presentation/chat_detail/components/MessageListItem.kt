@@ -24,6 +24,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MessageListItem(
     messageUi: ChatMessageUiModel,
+    messageWithOpenMenu: ChatMessageUiModel.LocalUserMessageUiModel?,
     onMessageLongClick: (ChatMessageUiModel.LocalUserMessageUiModel) -> Unit,
     onDismissMessageMenu: () -> Unit,
     onRetryMessageClick: (ChatMessageUiModel.LocalUserMessageUiModel) -> Unit,
@@ -43,6 +44,7 @@ fun MessageListItem(
             is ChatMessageUiModel.LocalUserMessageUiModel -> {
                 LocalUserMessage(
                     message = messageUi,
+                    messageWithOpenMenu = messageWithOpenMenu,
                     onMessageLongClick = { onMessageLongClick(messageUi) },
                     onDismissMessageMenu = onDismissMessageMenu,
                     onDeleteClick = { onDeleteMessageClick(messageUi) },
@@ -91,12 +93,12 @@ fun MessageListItemLocalSending_Preview() {
                 content = "This is a preview message that probably will span multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.SENDING,
                 formattedSentTime = UiText.DynamicString("Friday 2:20 pm."),
-                isMenuOpen = false
             ),
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteMessageClick = {},
-            onRetryMessageClick = {}
+            onRetryMessageClick = {},
+            messageWithOpenMenu = null
         )
     }
 }
@@ -111,12 +113,12 @@ fun MessageListItemLocalSent_Preview() {
                 content = "This is a preview message that probably will span multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
                 formattedSentTime = UiText.DynamicString("Friday 2:20 pm."),
-                isMenuOpen = false
             ),
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteMessageClick = {},
-            onRetryMessageClick = {}
+            onRetryMessageClick = {},
+            messageWithOpenMenu = null
         )
     }
 }
@@ -131,12 +133,12 @@ fun MessageListItemLocalFailed_Preview() {
                 content = "This is a preview message that probably will span multiple lines",
                 deliveryStatus = ChatMessageDeliveryStatus.FAILED,
                 formattedSentTime = UiText.DynamicString("Friday 2:20 pm."),
-                isMenuOpen = false
             ),
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteMessageClick = {},
-            onRetryMessageClick = {}
+            onRetryMessageClick = {},
+            messageWithOpenMenu = null
         )
     }
 }
@@ -154,12 +156,12 @@ fun MessageListItemOpenMenu_Preview() {
                     content = "This is a preview message that probably will span multiple lines",
                     deliveryStatus = ChatMessageDeliveryStatus.SENT,
                     formattedSentTime = UiText.DynamicString("Friday 2:20 pm."),
-                    isMenuOpen = true
                 ),
                 onMessageLongClick = {},
                 onDismissMessageMenu = {},
                 onDeleteMessageClick = {},
-                onRetryMessageClick = {}
+                onRetryMessageClick = {},
+                messageWithOpenMenu = null
             )
         }
     }
@@ -184,7 +186,8 @@ fun MessageListItemOther_Preview() {
             onMessageLongClick = {},
             onDismissMessageMenu = {},
             onDeleteMessageClick = {},
-            onRetryMessageClick = {}
+            onRetryMessageClick = {},
+            messageWithOpenMenu = null
         )
     }
 }

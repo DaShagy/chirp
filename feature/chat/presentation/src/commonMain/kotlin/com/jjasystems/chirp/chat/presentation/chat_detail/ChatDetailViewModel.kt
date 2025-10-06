@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.jjasystems.chirp.chat.domain.chat.ChatConnectionClient
 import com.jjasystems.chirp.chat.domain.chat.ChatRepository
 import com.jjasystems.chirp.chat.domain.message.MessageRepository
+import com.jjasystems.chirp.chat.domain.model.ChatMessage
 import com.jjasystems.chirp.chat.domain.model.ConnectionState
 import com.jjasystems.chirp.chat.domain.model.OutgoingNewMessage
 import com.jjasystems.chirp.chat.presentation.mapper.toUiModel
+import com.jjasystems.chirp.chat.presentation.model.ChatMessageUiModel
 import com.jjasystems.chirp.core.domain.auth.SessionStorage
 import com.jjasystems.chirp.core.domain.util.onFailure
 import com.jjasystems.chirp.core.domain.util.onSuccess
@@ -72,9 +74,9 @@ class ChatDetailViewModel(
         if(authInfo == null) {
             return@combine ChatDetailState()
         }
-
         currentState.copy(
-            chatUi = chatInfo.chat.toUiModel(authInfo.user.id)
+            chatUi = chatInfo.chat.toUiModel(authInfo.user.id),
+            messages = chatInfo.messages.map { it.toUiModel(authInfo.user.id) }
         )
     }
 
@@ -108,6 +110,10 @@ class ChatDetailViewModel(
             ChatDetailAction.OnDismissChatOptions -> onDismissChatOptions()
             ChatDetailAction.OnLeaveChatClick -> onLeaveChatClick()
             ChatDetailAction.OnSendMessageClick -> sendMessage()
+            is ChatDetailAction.OnRetryClick -> retryMessage(action.message)
+            is ChatDetailAction.OnDeleteMessageClick -> deleteMessage(action.message)
+            ChatDetailAction.OnDismissMessageMenu -> onDismissMessageMenu()
+            is ChatDetailAction.OnMessageLongClick -> onMessageLongClick(action.message)
             else -> Unit
         }
     }
@@ -186,6 +192,36 @@ class ChatDetailViewModel(
         }
     }
 
+    private fun retryMessage(message: ChatMessageUiModel.LocalUserMessageUiModel) {
+        viewModelScope.launch {
+            messageRepository.retryMessage(message.id)
+                .onFailure { error ->
+                    eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))
+                }
+        }
+    }
+
+    private fun deleteMessage(message: ChatMessageUiModel.LocalUserMessageUiModel) {
+        viewModelScope.launch {
+            messageRepository.deleteMessage(message.id)
+                .onFailure { error ->
+                    eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))
+                }
+        }
+    }
+
+    private fun onDismissMessageMenu() {
+        _state.update { it.copy(
+            messageWithOpenMenu = null
+        ) }
+    }
+
+    private fun onMessageLongClick(message: ChatMessageUiModel.LocalUserMessageUiModel) {
+        _state.update { it.copy(
+            messageWithOpenMenu = message
+        ) }
+    }
+
     private fun observeConnectionState() {
         connectionClient
             .connectionState
@@ -212,16 +248,6 @@ class ChatDetailViewModel(
                 if (chatId != null) {
                     messageRepository.getMessagesForChat(chatId)
                 } else emptyFlow()
-            }
-            .combine(sessionStorage.observeAuthInfo()) { messages, authInfo ->
-                if (authInfo == null) {
-                    return@combine messages
-                } else {
-                    _state.update { it.copy(
-                        messages = messages.map { it.toUiModel(authInfo.user.id) }
-                    ) }
-                    messages
-                }
             }
 
         val isNearBottom = state.map { it.isNearBottom }.distinctUntilChanged()

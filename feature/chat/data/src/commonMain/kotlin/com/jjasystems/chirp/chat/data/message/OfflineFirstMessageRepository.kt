@@ -5,7 +5,6 @@ import com.jjasystems.chirp.chat.data.dto.websocket.OutgoingWebSocketType
 import com.jjasystems.chirp.chat.data.dto.websocket.WebSocketMessageDto
 import com.jjasystems.chirp.chat.data.mapper.toDomain
 import com.jjasystems.chirp.chat.data.mapper.toEntity
-import com.jjasystems.chirp.chat.data.mapper.toNewMessage
 import com.jjasystems.chirp.chat.data.mapper.toWebSocketDto
 import com.jjasystems.chirp.chat.data.network.KtorWebSocketConnector
 import com.jjasystems.chirp.chat.database.ChirpChatDatabase
@@ -77,26 +76,66 @@ class OfflineFirstMessageRepository(
             val localUser = sessionStorage.observeAuthInfo().first()?.user
                 ?: return Result.Failure(DataError.Local.NOT_FOUND)
 
-            db.chatMessageDao.upsertMessage(
-                dto.toEntity(
-                    senderId = localUser.id,
-                    deliveryStatus = ChatMessageDeliveryStatus.SENDING
-                )
+            val entity = dto.toEntity(
+                senderId = localUser.id,
+                deliveryStatus = ChatMessageDeliveryStatus.SENDING
             )
+
+            db.chatMessageDao.upsertMessage(entity)
 
             return webSocketConnector
                 .sendMessage(dto.toJsonPayload())
                 .onFailure { error ->
                     applicationScope.launch {
-                        db.chatMessageDao.upsertMessage(
-                            dto.toEntity(
-                                senderId = localUser.id,
-                                deliveryStatus = ChatMessageDeliveryStatus.FAILED
-                            )
+                        db.chatMessageDao.updateDeliveryStatus(
+                            messageId = entity.messageId,
+                            status = ChatMessageDeliveryStatus.FAILED.name,
+                            timestamp = Clock.System.now().toEpochMilliseconds()
                         )
                     }.join()
                 }
         }
+    }
+
+    override suspend fun retryMessage(messageId: String): EmptyResult<DataError> {
+        return safeDatabaseUpdate {
+            val message = db.chatMessageDao.getMessageById(messageId)
+                ?: return Result.Failure(DataError.Local.NOT_FOUND)
+
+            db.chatMessageDao.updateDeliveryStatus(
+                messageId = messageId,
+                timestamp = Clock.System.now().toEpochMilliseconds(),
+                status = ChatMessageDeliveryStatus.SENDING.name
+            )
+
+            val outgoingNewMessage = OutgoingWebSocketDto.NewMessage(
+                chatId = message.chatId,
+                messageId = messageId,
+                content = message.content
+            )
+
+            return webSocketConnector
+                .sendMessage(outgoingNewMessage.toJsonPayload())
+                .onFailure {
+                    applicationScope.launch {
+                        db.chatMessageDao.updateDeliveryStatus(
+                            messageId = messageId,
+                            status = ChatMessageDeliveryStatus.FAILED.name,
+                            timestamp = Clock.System.now().toEpochMilliseconds()
+                        )
+                    }.join()
+                }
+        }
+    }
+
+    override suspend fun deleteMessage(messageId: String): EmptyResult<DataError> {
+        return chatMessageService
+            .deleteMessage(messageId)
+            .onSuccess {
+                applicationScope.launch {
+                    db.chatMessageDao.deleteMessageById(messageId)
+                }.join()
+            }
     }
 
     override fun getMessagesForChat(chatId: String): Flow<List<MessageWithSender>> {
