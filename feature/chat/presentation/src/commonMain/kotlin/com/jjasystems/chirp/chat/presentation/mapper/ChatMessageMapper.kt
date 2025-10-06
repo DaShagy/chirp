@@ -4,6 +4,11 @@ import com.jjasystems.chirp.chat.domain.model.MessageWithSender
 import com.jjasystems.chirp.chat.presentation.model.ChatMessageUiModel
 import com.jjasystems.chirp.chat.presentation.util.DateUtils
 
+fun List<MessageWithSender>.toUiModel(localUserId: String): List<ChatMessageUiModel> {
+    return this
+        .sortedByDescending { it.message.createdAt }
+        .map { it.toUiModel(localUserId) }
+}
 fun MessageWithSender.toUiModel(
     localUserId: String
 ): ChatMessageUiModel {

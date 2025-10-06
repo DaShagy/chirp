@@ -13,6 +13,8 @@ import com.jjasystems.chirp.chat.domain.model.OutgoingNewMessage
 import com.jjasystems.chirp.chat.presentation.mapper.toUiModel
 import com.jjasystems.chirp.chat.presentation.model.ChatMessageUiModel
 import com.jjasystems.chirp.core.domain.auth.SessionStorage
+import com.jjasystems.chirp.core.domain.util.DataErrorException
+import com.jjasystems.chirp.core.domain.util.Paginator
 import com.jjasystems.chirp.core.domain.util.onFailure
 import com.jjasystems.chirp.core.domain.util.onSuccess
 import com.jjasystems.chirp.core.presentation.util.toUiText
@@ -39,7 +41,7 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalUuidApi::class)
 class ChatDetailViewModel(
     private val chatRepository: ChatRepository,
-    private val sessionStorage: SessionStorage,
+    sessionStorage: SessionStorage,
     private val messageRepository: MessageRepository,
     private val connectionClient: ChatConnectionClient
 ) : ViewModel() {
@@ -50,6 +52,8 @@ class ChatDetailViewModel(
     private val _chatId = MutableStateFlow<String?>(null)
     private var hasLoadedInitialData = false
 
+    private var currentPaginator: Paginator<String?, ChatMessage>? = null
+
     private val canSendMessage = snapshotFlow { _state.value.messageTextFieldState.text.toString() }
         .map { it.isBlank() }
         .combine(connectionClient.connectionState) { isMessageBlank, connectionState ->
@@ -57,6 +61,13 @@ class ChatDetailViewModel(
         }
 
     private val chatInfoFlow = _chatId
+        .onEach { chatId ->
+            if(chatId != null) {
+                setupPaginatorForChat(chatId)
+            } else {
+                currentPaginator = null
+            }
+        }
         .flatMapLatest { chatId ->
             if(chatId != null) {
                 chatRepository.getChatInfoById(chatId)
@@ -76,7 +87,7 @@ class ChatDetailViewModel(
         }
         currentState.copy(
             chatUi = chatInfo.chat.toUiModel(authInfo.user.id),
-            messages = chatInfo.messages.map { it.toUiModel(authInfo.user.id) }
+            messages = chatInfo.messages.toUiModel(authInfo.user.id)
         )
     }
 
@@ -114,6 +125,8 @@ class ChatDetailViewModel(
             is ChatDetailAction.OnDeleteMessageClick -> deleteMessage(action.message)
             ChatDetailAction.OnDismissMessageMenu -> onDismissMessageMenu()
             is ChatDetailAction.OnMessageLongClick -> onMessageLongClick(action.message)
+            ChatDetailAction.OnScrollToTop -> onScrollToTop()
+            ChatDetailAction.OnRetryPaginationClick -> retryPagination()
             else -> Unit
         }
     }
@@ -222,14 +235,58 @@ class ChatDetailViewModel(
         ) }
     }
 
+    private fun setupPaginatorForChat(chatId: String) {
+        currentPaginator = Paginator(
+            initialKey = null,
+            onLoadUpdated = { isLoading ->
+                _state.update { it.copy(
+                    isPaginationLoading = isLoading
+                ) }
+            },
+            onRequest = { beforeTimestamp ->
+                messageRepository.fetchMessages(chatId, beforeTimestamp)
+            },
+            getNextKey = { messages ->
+                messages.minOfOrNull{ it.createdAt }?.toString()
+            },
+            onError = { throwable ->
+                if (throwable is DataErrorException) {
+                    _state.update { it.copy(
+                        paginationError = throwable.error.toUiText()
+                    ) }
+                }
+            },
+            onSuccess = { messages, _ ->
+                _state.update { it.copy(
+                    endReached = messages.isEmpty(),
+                    paginationError = null
+                ) }
+            }
+        )
+
+        _state.update { it.copy(
+            endReached = false,
+            isPaginationLoading = false
+        ) }
+    }
+
+
+    private fun onScrollToTop() = loadNextItems()
+
+    private fun retryPagination() = loadNextItems()
+
+    private fun loadNextItems() {
+        viewModelScope.launch {
+            currentPaginator?.loadNextItems()
+        }
+    }
+
     private fun observeConnectionState() {
         connectionClient
             .connectionState
             .onEach { connectionState ->
                 if(connectionState == ConnectionState.CONNECTED) {
-                    _chatId.value?.let {
-                        messageRepository.fetchMessages(it, null)
-                    }
+                    currentPaginator?.loadNextItems()
                 }
 
                 _state.update { it.copy(
