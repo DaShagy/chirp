@@ -3,11 +3,21 @@ package com.jjasystems.chirp.chat.presentation.mapper
 import com.jjasystems.chirp.chat.domain.model.MessageWithSender
 import com.jjasystems.chirp.chat.presentation.model.ChatMessageUiModel
 import com.jjasystems.chirp.chat.presentation.util.DateUtils
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 fun List<MessageWithSender>.toUiModel(localUserId: String): List<ChatMessageUiModel> {
     return this
         .sortedByDescending { it.message.createdAt }
-        .map { it.toUiModel(localUserId) }
+        .groupBy {
+            it.message.createdAt.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        }
+        .flatMap { (date, messages) ->
+            messages.map { it.toUiModel(localUserId) } + ChatMessageUiModel.DateSeparatorUiModel(
+                id = date.toString(),
+                date = DateUtils.formatDateSeparator(date)
+            )
+        }
 }
 fun MessageWithSender.toUiModel(
     localUserId: String

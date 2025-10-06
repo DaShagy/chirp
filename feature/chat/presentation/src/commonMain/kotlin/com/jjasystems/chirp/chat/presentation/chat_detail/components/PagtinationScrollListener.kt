@@ -1,6 +1,5 @@
 package com.jjasystems.chirp.chat.presentation.chat_detail.components
 
-import androidx.collection.mutableIntSetOf
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
