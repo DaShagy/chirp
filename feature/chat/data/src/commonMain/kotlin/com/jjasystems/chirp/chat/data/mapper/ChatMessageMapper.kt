@@ -9,6 +9,8 @@ import com.jjasystems.chirp.chat.database.view.LastMessageView
 import com.jjasystems.chirp.chat.domain.model.ChatMessage
 import com.jjasystems.chirp.chat.domain.model.ChatMessageDeliveryStatus
 import com.jjasystems.chirp.chat.domain.model.MessageWithSender
+import com.jjasystems.chirp.chat.domain.model.OutgoingNewMessage
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 fun ChatMessageSerializable.toDomain(): ChatMessage {
@@ -89,7 +91,29 @@ fun IncomingWebSocketDto.NewMessageDto.toEntity(): ChatMessageEntity {
         chatId = chatId,
         senderId = senderId,
         content = content,
-        timestamp = Instant.parse(createdAt).toEpochMilliseconds(),
+        timestamp = createdAt,
         deliveryStatus = ChatMessageDeliveryStatus.SENT.name
+    )
+}
+
+fun OutgoingNewMessage.toWebSocketDto(): OutgoingWebSocketDto.NewMessage {
+    return OutgoingWebSocketDto.NewMessage(
+        chatId = chatId,
+        messageId = messageId,
+        content = content
+    )
+}
+
+fun OutgoingWebSocketDto.NewMessage.toEntity(
+    senderId: String,
+    deliveryStatus: ChatMessageDeliveryStatus
+): ChatMessageEntity {
+    return ChatMessageEntity(
+        messageId = messageId,
+        chatId = chatId,
+        senderId = senderId,
+        content = content,
+        timestamp = Clock.System.now().toEpochMilliseconds(),
+        deliveryStatus = deliveryStatus.name
     )
 }

@@ -3,6 +3,7 @@ package com.jjasystems.chirp.chat.domain.message
 import com.jjasystems.chirp.chat.domain.model.ChatMessage
 import com.jjasystems.chirp.chat.domain.model.ChatMessageDeliveryStatus
 import com.jjasystems.chirp.chat.domain.model.MessageWithSender
+import com.jjasystems.chirp.chat.domain.model.OutgoingNewMessage
 import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.EmptyResult
 import com.jjasystems.chirp.core.domain.util.Result
@@ -18,6 +19,8 @@ interface MessageRepository {
         chatId: String,
         before: String? = null
     ): Result<List<ChatMessage>, DataError>
+
+    suspend fun sendMessage(message: OutgoingNewMessage): EmptyResult<DataError>
 
     fun getMessagesForChat(chatId: String): Flow<List<MessageWithSender>>
 }

@@ -2,11 +2,11 @@ package com.jjasystems.chirp.chat.data.network
 
 import com.jjasystems.chirp.chat.data.dto.websocket.WebSocketMessageDto
 import com.jjasystems.chirp.chat.data.lifecycle.AppLifecycleObserver
-import com.jjasystems.chirp.chat.domain.error.ConnectionError
 import com.jjasystems.chirp.chat.domain.model.ConnectionState
 import com.jjasystems.chirp.core.data.network.UrlConstants
 import com.jjasystems.chirp.core.domain.auth.SessionStorage
 import com.jjasystems.chirp.core.domain.logging.ChirpLogger
+import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.EmptyResult
 import com.jjasystems.chirp.core.domain.util.Result
 import io.ktor.client.HttpClient
@@ -207,11 +207,11 @@ class KtorWebSocketConnector(
         }
     }
 
-    suspend fun sendMessage(message: String): EmptyResult<ConnectionError> {
+    suspend fun sendMessage(message: String): EmptyResult<DataError.Connection> {
         val connectionState = connectionState.value
 
         if (currentSession == null || connectionState != ConnectionState.CONNECTED) {
-            return Result.Failure(ConnectionError.NOT_CONNECTED)
+            return Result.Failure(DataError.Connection.NOT_CONNECTED)
         }
 
         return try {
@@ -220,7 +220,7 @@ class KtorWebSocketConnector(
         } catch (e: Exception) {
             coroutineContext.ensureActive()
             logger.error("Unable to send WebSocket message", e)
-            Result.Failure(ConnectionError.MESSAGE_SEND_FAILED)
+            Result.Failure(DataError.Connection.MESSAGE_SEND_FAILED)
         }
     }
 }

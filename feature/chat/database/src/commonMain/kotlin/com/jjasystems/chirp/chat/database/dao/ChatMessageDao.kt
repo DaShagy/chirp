@@ -54,7 +54,7 @@ interface ChatMessageDao {
         SET deliveryStatus = :status, deliveryStatusTimestamp = :timestamp
         WHERE messageId = :messageId
     """)
-    suspend fun updaterDeliveryStatus(messageId: String, status: String, timestamp: Long)
+    suspend fun updateDeliveryStatus(messageId: String, status: String, timestamp: Long)
 
 
     @Transaction

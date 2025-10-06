@@ -5,18 +5,12 @@ import com.jjasystems.chirp.chat.data.dto.websocket.IncomingWebSocketType
 import com.jjasystems.chirp.chat.data.dto.websocket.WebSocketMessageDto
 import com.jjasystems.chirp.chat.data.mapper.toDomain
 import com.jjasystems.chirp.chat.data.mapper.toEntity
-import com.jjasystems.chirp.chat.data.mapper.toNewMessage
 import com.jjasystems.chirp.chat.data.network.KtorWebSocketConnector
 import com.jjasystems.chirp.chat.database.ChirpChatDatabase
 import com.jjasystems.chirp.chat.domain.chat.ChatConnectionClient
 import com.jjasystems.chirp.chat.domain.chat.ChatRepository
-import com.jjasystems.chirp.chat.domain.error.ConnectionError
-import com.jjasystems.chirp.chat.domain.message.MessageRepository
 import com.jjasystems.chirp.chat.domain.model.ChatMessage
-import com.jjasystems.chirp.chat.domain.model.ChatMessageDeliveryStatus
 import com.jjasystems.chirp.core.domain.auth.SessionStorage
-import com.jjasystems.chirp.core.domain.util.EmptyResult
-import com.jjasystems.chirp.core.domain.util.onFailure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,7 +27,6 @@ class WebSocketChatConnectionClient(
     private val db: ChirpChatDatabase,
     private val sessionStorage: SessionStorage,
     private val json: Json,
-    private val messageRepository: MessageRepository,
     applicationScope: CoroutineScope
 ): ChatConnectionClient {
 
@@ -51,25 +44,6 @@ class WebSocketChatConnectionClient(
         )
 
     override val connectionState = webSocketConnector.connectionState
-
-    override suspend fun sendChatMessage(message: ChatMessage): EmptyResult<ConnectionError> {
-        val outgoingDto = message.toNewMessage()
-        val webSocketMessage = WebSocketMessageDto(
-            type = outgoingDto.type.name,
-            payload = json.encodeToString(outgoingDto)
-        )
-
-        val rawJsonPayload = json.encodeToString(webSocketMessage)
-
-        return webSocketConnector
-            .sendMessage(rawJsonPayload)
-            .onFailure { error ->
-                messageRepository.updateMessageDeliveryStatus(
-                    messageId = message.id,
-                    status = ChatMessageDeliveryStatus.FAILED
-                )
-            }
-    }
 
     private fun parseIncomingMessage(message: WebSocketMessageDto): IncomingWebSocketDto? {
         return when (message.type) {

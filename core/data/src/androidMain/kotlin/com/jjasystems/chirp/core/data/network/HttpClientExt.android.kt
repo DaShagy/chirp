@@ -4,6 +4,7 @@ import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.Result
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.statement.HttpResponse
+import io.ktor.serialization.JsonConvertException
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.SerializationException
@@ -30,6 +31,8 @@ actual suspend fun <T> platformSafeCall(
     } catch (e: HttpRequestTimeoutException) {
         Result.Failure(DataError.Remote.REQUEST_TIMEOUT)
     } catch (e: SerializationException) {
+        Result.Failure(DataError.Remote.SERIALIZATION)
+    } catch (e: JsonConvertException) {
         Result.Failure(DataError.Remote.SERIALIZATION)
     } catch (e: Exception) {
         coroutineContext.ensureActive()
