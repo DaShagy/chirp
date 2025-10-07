@@ -20,6 +20,7 @@ import com.jjasystems.chirp.chat.presentation.chat_detail.ChatDetailRoot
 import com.jjasystems.chirp.chat.presentation.chat_list.ChatListRoot
 import com.jjasystems.chirp.chat.presentation.create_chat.CreateChatRoot
 import com.jjasystems.chirp.chat.presentation.manage_chat.ManageChatRoot
+import com.jjasystems.chirp.chat.presentation.profile.ProfileRoot
 import com.jjasystems.chirp.core.design_system.theme.extended
 import com.jjasystems.chirp.core.presentation.util.DialogSheetScopedViewModel
 import kotlinx.coroutines.launch
@@ -128,6 +129,16 @@ fun ChatListAdaptiveLayout(
                 chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
             },
             onMembersAdded = {
+                chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
+            }
+        )
+    }
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.Profile
+    ) {
+        ProfileRoot(
+            onDismiss = {
                 chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
             }
         )

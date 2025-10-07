@@ -1,6 +1,8 @@
 package com.jjasystems.chirp.core.design_system.components.dialog
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,6 +24,7 @@ fun ChirpDialog(
         Surface(
             modifier = modifier
                 .fillMaxWidth()
+                .heightIn(max = 540.dp)
                 .clip(RoundedCornerShape(16.dp)),
             color = MaterialTheme.colorScheme.surface,
             content = content
