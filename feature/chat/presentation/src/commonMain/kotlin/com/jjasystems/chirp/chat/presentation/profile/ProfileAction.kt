@@ -11,5 +11,5 @@ sealed interface ProfileAction {
     data object OnDismissDeleteConfirmationDialog: ProfileAction
     data object OnToggleCurrentPasswordVisibility: ProfileAction
     data object OnToggleNewPasswordVisibility: ProfileAction
-    data object OnChangePassword: ProfileAction
+    data object OnChangePasswordClick: ProfileAction
 }

@@ -1,6 +1,7 @@
 package com.jjasystems.chirp.core.data.auth
 
 import com.jjasystems.chirp.core.data.dto.AuthInfoSerializable
+import com.jjasystems.chirp.core.data.dto.request.ChangePasswordRequest
 import com.jjasystems.chirp.core.data.dto.request.EmailRequest
 import com.jjasystems.chirp.core.data.dto.request.LoginRequest
 import com.jjasystems.chirp.core.data.dto.request.RegisterRequest
@@ -86,6 +87,19 @@ class KtorAuthService(
             body = ResetPasswordRequest(
                 newPassword = newPassword,
                 token = token
+            )
+        )
+    }
+
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/change-password",
+            body = ChangePasswordRequest(
+                oldPassword = currentPassword,
+                newPassword = newPassword
             )
         )
     }

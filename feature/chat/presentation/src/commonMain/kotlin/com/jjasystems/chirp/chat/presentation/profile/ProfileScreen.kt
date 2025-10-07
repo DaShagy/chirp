@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chirp.core.design_system.generated.resources.icon_upload
@@ -36,6 +38,7 @@ import chirp.feature.chat.presentation.generated.resources.delete_profile_image_
 import chirp.feature.chat.presentation.generated.resources.email
 import chirp.feature.chat.presentation.generated.resources.new_password
 import chirp.feature.chat.presentation.generated.resources.password
+import chirp.feature.chat.presentation.generated.resources.password_change_successful
 import chirp.feature.chat.presentation.generated.resources.password_hint
 import chirp.feature.chat.presentation.generated.resources.profile_image
 import chirp.feature.chat.presentation.generated.resources.save
@@ -52,6 +55,7 @@ import com.jjasystems.chirp.core.design_system.components.dialog.DestructiveConf
 import com.jjasystems.chirp.core.design_system.components.textfields.ChirpPasswordTextField
 import com.jjasystems.chirp.core.design_system.components.textfields.ChirpTextField
 import com.jjasystems.chirp.core.design_system.theme.ChirpTheme
+import com.jjasystems.chirp.core.design_system.theme.extended
 import com.jjasystems.chirp.core.presentation.util.DeviceConfiguration
 import com.jjasystems.chirp.core.presentation.util.clearFocusOnTap
 import com.jjasystems.chirp.core.presentation.util.currentDeviceConfiguration
@@ -200,8 +204,7 @@ fun ProfileScreen(
                     onAction(ProfileAction.OnToggleCurrentPasswordVisibility)
                 },
                 placeholder = stringResource(Res.string.current_password),
-                isError = state.currentPasswordError != null,
-                supportingText = state.currentPasswordError?.asString()
+                isError = state.newPasswordError != null,
             )
 
             ChirpPasswordTextField(
@@ -215,6 +218,16 @@ fun ProfileScreen(
                 supportingText = state.newPasswordError?.asString()
                     ?: stringResource(Res.string.password_hint)
             )
+
+            if(state.isPasswordChangeSuccessful) {
+                Text(
+                    text = stringResource(Res.string.password_change_successful),
+                    color = MaterialTheme.colorScheme.extended.success,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -234,9 +247,10 @@ fun ProfileScreen(
                 ChirpButton(
                     text = stringResource(Res.string.save),
                     onClick = {
-                        onAction(ProfileAction.OnChangePassword)
+                        onAction(ProfileAction.OnChangePasswordClick)
                     },
-                    enabled = state.canChangePassword
+                    enabled = state.canChangePassword,
+                    isLoading = state.isChangingPassword
                 )
             }
         }
