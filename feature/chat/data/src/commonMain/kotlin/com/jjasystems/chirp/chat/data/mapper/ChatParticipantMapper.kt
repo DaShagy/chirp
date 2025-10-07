@@ -1,8 +1,10 @@
 package com.jjasystems.chirp.chat.data.mapper
 
 import com.jjasystems.chirp.chat.data.dto.ChatParticipantSerializable
+import com.jjasystems.chirp.chat.data.dto.response.ProfilePictureUploadUrlResponse
 import com.jjasystems.chirp.chat.database.entity.ChatParticipantEntity
 import com.jjasystems.chirp.chat.domain.model.ChatParticipant
+import com.jjasystems.chirp.chat.domain.model.ProfilePictureUploadUrl
 import com.jjasystems.chirp.core.domain.auth.User
 
 fun ChatParticipantSerializable.toDomain(): ChatParticipant {
@@ -26,5 +28,13 @@ fun ChatParticipant.toEntity(): ChatParticipantEntity {
         userId = userId,
         username = username,
         profilePictureUrl = profilePictureUrl
+    )
+}
+
+fun ProfilePictureUploadUrlResponse.toDomain(): ProfilePictureUploadUrl {
+    return ProfilePictureUploadUrl(
+        uploadUrl = uploadUrl,
+        publicUrl = publicUrl,
+        headers = headers
     )
 }

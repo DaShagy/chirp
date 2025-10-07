@@ -46,14 +46,4 @@ kotlin {
             }
         }
     }
-
-    targets.withType<KotlinNativeTarget> {
-        compilations.getByName("main") {
-            cinterops {
-                create("network") {
-                    defFile(file("src/nativeInterop/cinterop/network.def"))
-                }
-            }
-        }
-    }
 }

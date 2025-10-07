@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.error_current_password_incorrect
+import chirp.feature.chat.presentation.generated.resources.error_invalid_file_type
 import chirp.feature.chat.presentation.generated.resources.error_new_password_conflict
 import com.jjasystems.chirp.chat.domain.participant.ChatParticipantRepository
+import com.jjasystems.chirp.chat.domain.participant.ChatParticipantService
 import com.jjasystems.chirp.core.domain.auth.AuthService
 import com.jjasystems.chirp.core.domain.auth.SessionStorage
 import com.jjasystems.chirp.core.domain.util.DataError
@@ -31,7 +33,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val authService: AuthService,
     private val chatParticipantRepository: ChatParticipantRepository,
-    private val sessionStorage: SessionStorage
+    sessionStorage: SessionStorage
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -43,6 +45,7 @@ class ProfileViewModel(
     ) { currentState, authInfo ->
         if (authInfo != null) {
             currentState.copy(
+                userInitials = authInfo.user.username.take(2).uppercase(),
                 username = authInfo.user.username,
                 emailTextState = TextFieldState(initialText = authInfo.user.email),
                 profilePictureUrl = authInfo.user.profilePictureUrl
@@ -65,8 +68,12 @@ class ProfileViewModel(
     fun onAction(action: ProfileAction) {
         when (action) {
             is ProfileAction.OnChangePasswordClick -> changePassword()
-            ProfileAction.OnToggleCurrentPasswordVisibility -> toggleCurrentPasswordVisibility()
-            ProfileAction.OnToggleNewPasswordVisibility -> toggleNewPasswordVisibility()
+            is ProfileAction.OnToggleCurrentPasswordVisibility -> toggleCurrentPasswordVisibility()
+            is ProfileAction.OnToggleNewPasswordVisibility -> toggleNewPasswordVisibility()
+            is ProfileAction.OnPictureSelected -> uploadProfilePicture(action.bytes, action.mimeType)
+            is ProfileAction.OnDeletePictureClick -> showDeleteConfirmation()
+            is ProfileAction.OnConfirmDeleteClick -> deleteProfilePicture()
+            is ProfileAction.OnDismissDeleteConfirmationDialog -> dismissDeleteConfirmation()
             else -> Unit
         }
     }
@@ -158,5 +165,81 @@ class ProfileViewModel(
         _state.update { it.copy(
             isNewPasswordVisible = !it.isNewPasswordVisible
         ) }
+    }
+
+    private fun uploadProfilePicture(bytes: ByteArray, mimeType: String?) {
+
+        if(state.value.isUploadingImage) return
+
+        if(mimeType == null) {
+            _state.update { it.copy(
+                imageError = UiText.Resource(Res.string.error_invalid_file_type)
+            ) }
+
+            return
+        }
+
+        _state.update { it.copy(
+            isUploadingImage = true,
+            imageError = null
+        ) }
+
+        viewModelScope.launch {
+            chatParticipantRepository
+                .uploadProfilePicture(
+                    imageBytes = bytes,
+                    mimeType = mimeType
+                )
+                .onSuccess {
+                    _state.update { it.copy(
+                        isUploadingImage = false
+                    ) }
+                }
+                .onFailure { error ->
+                    _state.update { it.copy(
+                        imageError = error.toUiText(),
+                        isUploadingImage = false
+                    ) }
+                }
+        }
+    }
+
+    private fun showDeleteConfirmation() {
+        _state.update { it.copy(
+            showDeleteConfirmationDialog = true
+        ) }
+    }
+
+    private fun dismissDeleteConfirmation() {
+        _state.update { it.copy(
+            showDeleteConfirmationDialog = false
+        ) }
+    }
+
+    private fun deleteProfilePicture() {
+        if(state.value.isDeletingImage && state.value.profilePictureUrl != null) return
+
+        _state.update { it.copy(
+            isDeletingImage = true,
+            imageError = null,
+            showDeleteConfirmationDialog = false
+        ) }
+
+        viewModelScope.launch {
+            chatParticipantRepository
+                .deleteProfilePicture()
+                .onSuccess {
+                    _state.update { it.copy(
+                        isDeletingImage = false,
+                        imageError = null
+                    ) }
+                }
+                .onFailure { error ->
+                    _state.update { it.copy(
+                        isDeletingImage = false,
+                        imageError = error.toUiText()
+                    ) }
+                }
+        }
     }
 }
