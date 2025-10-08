@@ -7,6 +7,6 @@ sealed interface ChatGraphRoutes {
     data object Graph: ChatGraphRoutes
 
     @Serializable
-    data object ChatListDetail: ChatGraphRoutes
+    data class ChatListDetail(val chatId: String? = null): ChatGraphRoutes
 }
 

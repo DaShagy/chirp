@@ -9,6 +9,7 @@ import com.jjasystems.chirp.chat.data.message.KtorChatMessageService
 import com.jjasystems.chirp.chat.data.message.OfflineFirstMessageRepository
 import com.jjasystems.chirp.chat.data.network.ConnectionRetryHandler
 import com.jjasystems.chirp.chat.data.network.KtorWebSocketConnector
+import com.jjasystems.chirp.chat.data.notification.KtorDeviceTokenService
 import com.jjasystems.chirp.chat.data.participant.OfflineFirstChatParticipantRepository
 import com.jjasystems.chirp.chat.database.DatabaseFactory
 import com.jjasystems.chirp.chat.domain.chat.ChatConnectionClient
@@ -17,6 +18,7 @@ import com.jjasystems.chirp.chat.domain.chat.ChatRepository
 import com.jjasystems.chirp.chat.domain.chat.ChatService
 import com.jjasystems.chirp.chat.domain.message.ChatMessageService
 import com.jjasystems.chirp.chat.domain.message.MessageRepository
+import com.jjasystems.chirp.chat.domain.notification.DeviceTokenService
 import com.jjasystems.chirp.chat.domain.participant.ChatParticipantRepository
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
@@ -38,6 +40,7 @@ val chatDataModule = module {
     singleOf(::ConnectionRetryHandler)
     singleOf(::KtorWebSocketConnector)
     singleOf(::KtorChatMessageService) bind ChatMessageService::class
+    singleOf(::KtorDeviceTokenService) bind DeviceTokenService::class
 
     single {
         Json {
