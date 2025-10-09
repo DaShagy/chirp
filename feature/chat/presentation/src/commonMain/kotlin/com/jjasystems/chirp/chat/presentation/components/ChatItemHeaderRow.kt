@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import chirp.feature.chat.presentation.generated.resources.Res
 import chirp.feature.chat.presentation.generated.resources.group_chat
+import chirp.feature.chat.presentation.generated.resources.only_you
 import chirp.feature.chat.presentation.generated.resources.you
 import com.jjasystems.chirp.chat.presentation.model.ChatUiModel
 import com.jjasystems.chirp.core.design_system.components.avatar.ChirpStackedAvatars
@@ -31,9 +32,11 @@ fun ChatItemHeaderRow(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        ChirpStackedAvatars(
-            avatars = chat.otherParticipants
-        )
+        if (chat.otherParticipants.isNotEmpty()) {
+            ChirpStackedAvatars(
+                avatars = chat.otherParticipants
+            )
+        }
 
         Column(
             modifier = Modifier.weight(1f),
@@ -41,7 +44,8 @@ fun ChatItemHeaderRow(
         ) {
             Text(
                 text = if(!isGroupChat) {
-                    chat.otherParticipants.firstOrNull()?.username.orEmpty()
+                    chat.otherParticipants.firstOrNull()?.username
+                        ?: stringResource(Res.string.only_you)
                 } else {
                     stringResource(Res.string.group_chat)
                 },

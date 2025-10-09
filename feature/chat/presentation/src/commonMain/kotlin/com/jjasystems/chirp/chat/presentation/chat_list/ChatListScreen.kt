@@ -86,7 +86,6 @@ fun ChatListRoot(
         onAction = { action ->
             when(action) {
                 is ChatListAction.OnSelectChat -> onChatClick(action.chatId)
-                ChatListAction.OnConfirmLogoutClick -> onSuccessfulLogout()
                 ChatListAction.OnCreateChatClick -> onCreateChatClick()
                 ChatListAction.OnProfileSettings -> onProfileSettingsClick()
                 else -> Unit

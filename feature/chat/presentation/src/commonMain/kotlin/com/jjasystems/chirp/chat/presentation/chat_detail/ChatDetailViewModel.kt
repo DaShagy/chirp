@@ -66,6 +66,7 @@ class ChatDetailViewModel(
         .onEach { chatId ->
             if(chatId != null) {
                 setupPaginatorForChat(chatId)
+                loadNextItems()
             } else {
                 currentPaginator = null
             }
@@ -181,6 +182,8 @@ class ChatDetailViewModel(
                         messages = emptyList(),
                         bannerState = BannerState()
                     )}
+
+                    eventChannel.send(ChatDetailEvent.OnChatLeft)
                 }
                 .onFailure { error ->
                     eventChannel.send(

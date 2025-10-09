@@ -104,6 +104,12 @@ fun ChatDetailRoot(
         viewModel.onAction(ChatDetailAction.OnSelectChat(chatId))
     }
 
+    LaunchedEffect(chatId, state.messages) {
+        if (state.messages.isNotEmpty()) {
+            messageListState.scrollToItem(0)
+        }
+    }
+
     BackHandler(
         enabled = !isDetailPresent
     ) {
