@@ -9,7 +9,8 @@ import androidx.navigation.toRoute
 import com.jjasystems.chirp.chat.presentation.chat_list_detail.ChatListAdaptiveLayout
 
 fun NavGraphBuilder.chatGraph(
-    navController: NavController
+    navController: NavController,
+    onLogout: () -> Unit
 ) {
     navigation<ChatGraphRoutes.Graph>(
         startDestination = ChatGraphRoutes.ChatListDetail(null)
@@ -24,9 +25,7 @@ fun NavGraphBuilder.chatGraph(
             val route = backStackEntry.toRoute<ChatGraphRoutes.ChatListDetail>()
             ChatListAdaptiveLayout(
                 initialChatId = route.chatId,
-                onLogout = {
-                    //TODO: Log out user
-                }
+                onLogout = onLogout
             )
         }
     }

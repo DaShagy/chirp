@@ -4,6 +4,7 @@ import com.jjasystems.chirp.core.data.dto.AuthInfoSerializable
 import com.jjasystems.chirp.core.data.dto.request.ChangePasswordRequest
 import com.jjasystems.chirp.core.data.dto.request.EmailRequest
 import com.jjasystems.chirp.core.data.dto.request.LoginRequest
+import com.jjasystems.chirp.core.data.dto.request.RefreshRequest
 import com.jjasystems.chirp.core.data.dto.request.RegisterRequest
 import com.jjasystems.chirp.core.data.dto.request.ResetPasswordRequest
 import com.jjasystems.chirp.core.data.mapper.toDomain
@@ -15,7 +16,10 @@ import com.jjasystems.chirp.core.domain.util.DataError
 import com.jjasystems.chirp.core.domain.util.EmptyResult
 import com.jjasystems.chirp.core.domain.util.Result
 import com.jjasystems.chirp.core.domain.util.map
+import com.jjasystems.chirp.core.domain.util.onSuccess
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.authProvider
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 
 class KtorAuthService(
     private val httpClient: HttpClient
@@ -102,5 +106,16 @@ class KtorAuthService(
                 newPassword = newPassword
             )
         )
+    }
+
+    override suspend fun logout(refreshToken: String): EmptyResult<DataError.Remote> {
+        return httpClient.post<RefreshRequest, Unit>(
+            route = "/auth/logout",
+            body = RefreshRequest(
+                refreshToken = refreshToken
+            )
+        ).onSuccess {
+            httpClient.authProvider<BearerAuthProvider>()?.clearToken()
+        }
     }
 }
