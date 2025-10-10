@@ -12,11 +12,13 @@ import chirp.composeapp.generated.resources.app_icon
 import chirp.composeapp.generated.resources.file
 import chirp.composeapp.generated.resources.new_window
 import com.jjasystems.chirp.App
+import com.jjasystems.chirp.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ChirpWindow(
+    appTheme: AppTheme,
     onCloseRequest: () -> Unit,
     onAddWindowClick: () -> Unit,
     onFocusChanged: (Boolean) -> Unit
@@ -50,6 +52,9 @@ fun ChirpWindow(
             }
         }
 
-        App({})
+        App(
+            isDarkTheme = appTheme == AppTheme.DARK,
+            onAuthenticatedCheck = {}
+        )
     }
 }
