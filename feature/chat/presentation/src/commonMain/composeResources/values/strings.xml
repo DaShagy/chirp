@@ -41,6 +41,8 @@
     <string name="do_you_want_to_logout_desc">You will have to log in again to use the app.</string>
     <string name="error_participant_not_found">No participant found</string>
 
+    <string name="drop_picture_info">Drop your image here to upload it as your new profile picture</string>
+    <string name="select_a_profile_picture">Select a profile picture</string>
     <string name="profile_image">Profile image</string>
     <string name="upload_image">Upload image</string>
     <string name="delete">Delete</string>
