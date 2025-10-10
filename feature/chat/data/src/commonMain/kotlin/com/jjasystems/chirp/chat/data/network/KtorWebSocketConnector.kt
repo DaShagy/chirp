@@ -99,7 +99,7 @@ class KtorWebSocketConnector(
                 null
             }
             !isInForeground -> {
-                logger.info("App in backgroubd. Disconnecting socket proactively.")
+                logger.info("App in background. Disconnecting socket proactively.")
                 _connectionState.value = ConnectionState.DISCONNECTED
                 currentSession?.close()
                 currentSession = null

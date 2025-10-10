@@ -40,6 +40,12 @@ kotlin {
                 implementation(libs.ktor.client.darwin)
             }
         }
+
+        desktopMain {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
+            }
+        }
     }
 
 }

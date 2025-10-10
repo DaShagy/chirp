@@ -1,3 +1,4 @@
+import com.jjasystems.chirp.convention.applyHierarchyTemplate
 import com.jjasystems.chirp.convention.configureAndroidTarget
 import com.jjasystems.chirp.convention.configureDesktopTarget
 import com.jjasystems.chirp.convention.configureIosTarget
@@ -23,6 +24,10 @@ class CmpApplicationConventionPlugin: Plugin<Project> {
             configureAndroidTarget()
             configureIosTarget()
             configureDesktopTarget()
+
+            extensions.configure<KotlinMultiplatformExtension> {
+                applyHierarchyTemplate()
+            }
 
             dependencies {
                 "debugImplementation"(libs.findLibrary(("androidx-compose-ui-tooling")).get())
