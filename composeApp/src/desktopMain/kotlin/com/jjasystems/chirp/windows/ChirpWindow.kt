@@ -34,6 +34,11 @@ fun ChirpWindow(
         title = "Chirp",
         icon = painterResource(Res.drawable.app_icon)
     ) {
+
+        FocusObserver(
+            onFocusChanged = onFocusChanged
+        )
+
         MenuBar {
             Menu(
                 text = stringResource(Res.string.file),

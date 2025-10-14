@@ -1,5 +1,7 @@
 package com.jjasystems.chirp
 
+import androidx.compose.ui.window.Notification
+import com.jjasystems.chirp.chat.data.notification.DesktopNotifier
 import com.jjasystems.chirp.core.domain.preferences.ThemePreference
 import com.jjasystems.chirp.core.domain.preferences.ThemePreferences
 import com.jjasystems.chirp.windows.WindowState
@@ -15,13 +17,15 @@ import kotlinx.coroutines.launch
 
 class ApplicationStateHolder(
     private val applicationScope: CoroutineScope,
-    private val themePreferences: ThemePreferences
+    private val themePreferences: ThemePreferences,
+    private val desktopNotifier: DesktopNotifier
 ) {
 
     private val _state = MutableStateFlow(ApplicationState())
     val state = _state
         .onStart {
             observeThemePreferences()
+            observeNewMessages()
         }
         .stateIn(
             scope = applicationScope,
@@ -47,6 +51,18 @@ class ApplicationStateHolder(
         }
     }
 
+    fun onWindowFocusChanged(id: String, isFocused: Boolean) {
+        _state.update { it.copy(
+            windows = it.windows.map { currentWindow ->
+                if (currentWindow.id == id) {
+                    currentWindow.copy(isFocused = isFocused)
+                } else {
+                    currentWindow
+                }
+            }
+        ) }
+    }
+
     private fun observeThemePreferences() {
         themePreferences
             .observeThemePreference()
@@ -55,5 +71,24 @@ class ApplicationStateHolder(
                     themePreference = preference
                 ) }
             }.launchIn(applicationScope)
+    }
+
+    private fun observeNewMessages() {
+        desktopNotifier
+            .observeNewNotifications()
+            .onEach { notificationPayload ->
+                val isAppInBackground = state.value.windows.none { it.isFocused }
+
+                if (isAppInBackground) {
+                    state.value.trayState.sendNotification(
+                        notification = Notification(
+                            title = notificationPayload.title,
+                            message = notificationPayload.message,
+                            type = Notification.Type.Info
+                        )
+                    )
+                }
+            }
+            .launchIn(applicationScope)
     }
 }

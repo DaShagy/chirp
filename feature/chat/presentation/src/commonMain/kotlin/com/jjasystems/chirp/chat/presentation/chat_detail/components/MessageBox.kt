@@ -13,6 +13,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import chirp.core.design_system.generated.resources.icon_cloud_off
@@ -42,7 +51,18 @@ fun MessageBox(
 
     ChirpMultiLineTextField(
         state = messageTextFieldState,
-        modifier = modifier,
+        modifier = modifier
+            .onPreviewKeyEvent { keyEvent ->
+                val isModifierKeyPressed = keyEvent.isMetaPressed || keyEvent.isCtrlPressed
+                val isSentShortcutPressed = isModifierKeyPressed
+                        && keyEvent.key == Key.Enter
+                        && keyEvent.type == KeyEventType.KeyDown
+
+                if (isSentShortcutPressed) {
+                    onSendClick()
+                    true
+                } else false
+            },
         placeholder = stringResource(Res.string.send_a_message),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Send
