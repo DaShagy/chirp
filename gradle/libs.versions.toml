@@ -48,6 +48,7 @@ coil-network = "3.3.0"
 moko = "0.19.1"
 buildkonfig = "0.17.1"
 kermit = "2.0.8"
+conveyor = "1.12"
 
 projectApplicationId = "com.jjasystems.chirp"
 projectVersionName = "1.0"
@@ -198,6 +199,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 compose-hot-reload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-hot-reload" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+conveyor = { id = "dev.hydraulic.conveyor", version.ref = "conveyor" }
 
 # Build tools
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
